@@ -1,0 +1,118 @@
+{
+  
+    "test_case_for_process_instance_6478": {
+        "expected_output_json": {
+            "bulletproof": true,
+            "pushups": true,
+            "score": 3,
+            "score_message": "Pefect! You answered it all correctly.",
+            "thanos": false
+        },
+        "tasks": {
+            "Proccess_general:Activity_Display_Questions": {
+                "data": [
+                    {
+                        "bulletproof": true,
+                        "pushups": true,
+                        "thanos": false
+                    }
+                ]
+            },
+            "Proccess_general:Activity_Perfect": {
+                "data": [
+                    {}
+                ]
+            },
+            "Proccess_general:Activity_Review": {
+                "data": [
+                    {}
+                ]
+            },
+            "Proccess_general:Activity_intro": {
+                "data": [
+                    {}
+                ]
+            }
+        }
+    },
+    "test_case_for_process_instance_6479": {
+        "expected_output_json": {
+            "bulletproof": false,
+            "pushups": false,
+            "score": 0,
+            "score_message": "Terrible! This is as wrong as it is possible to be.",
+            "thanos": true
+        },
+        "tasks": {
+            "Proccess_general:Activity_0_Correct": {
+                "data": [
+                    {}
+                ]
+            },
+            "Proccess_general:Activity_Display_Questions": {
+                "data": [
+                    {
+                        "bulletproof": false,
+                        "pushups": false,
+                        "thanos": true
+                    }
+                ]
+            },
+            "Proccess_general:Activity_Review": {
+                "data": [
+                    {}
+                ]
+            },
+            "Proccess_general:Activity_intro": {
+                "data": [
+                    {}
+                ]
+            }
+        }
+    },
+    "test_case_for_process_instance_6480": {
+        "expected_output_json": {
+            "bulletproof": true,
+            "pushups": false,
+            "score": 1,
+            "score_message": "You are not perfect, but you understand a little about old Chuck.",
+            "thanos": true
+        },
+        "tasks": {
+            "Proccess_general:Activity_Display_Questions": {
+                "data": [
+                    {
+                        "bulletproof": true,
+                        "pushups": true,
+                        "thanos": true
+                    },
+                    {
+                        "bulletproof": true,
+                        "pushups": false,
+                        "score": 2,
+                        "score_message": "You are not perfect, but you understand a little about old Chuck.",
+                        "thanos": true
+                    }
+                ]
+            },
+            "Proccess_general:Activity_Review": {
+                "data": [
+                    {},
+                    {}
+                ]
+            },
+            "Proccess_general:Activity_intro": {
+                "data": [
+                    {},
+                    {}
+                ]
+            },
+            "Proccess_general:Activity_some_Correct": {
+                "data": [
+                    {},
+                    {}
+                ]
+            }
+        }
+    }
+}

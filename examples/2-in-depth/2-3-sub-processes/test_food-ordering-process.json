@@ -1,0 +1,305 @@
+{
+    "test_case_for_process_instance_6481": {
+        "expected_output_json": {
+            "appetizers": [
+                "Buffalo Wings",
+                "Onion Rings"
+            ],
+            "beef_lasagna": true,
+            "bruschetta": null,
+            "buffalo_wings": true,
+            "chicken_cordon_bleu": null,
+            "chicken_noodle_soup": true,
+            "cost": 78,
+            "desserts": [
+                "Key Lime Pie",
+                "Red Velvet Cake"
+            ],
+            "french_onion_soup": null,
+            "key_lime_pie": true,
+            "mains": [
+                "Scallops with Basil Risotto",
+                "Beef Lasagna"
+            ],
+            "name": "Henry",
+            "new_york_cheesecake": null,
+            "onion_rings": true,
+            "red_velvet_cake": true,
+            "roasted_pumpkin_soup": true,
+            "scallops_with_basil_risotto": true,
+            "soups": [
+                "Chicken Noodle Soup",
+                "Roasted Pumpkin Soup"
+            ],
+            "success": true,
+            "thai_mango_sticky_rice": null,
+            "tiramisu": null,
+            "tom_yum_soup": null,
+            "turkey_enchilada": null,
+            "vegetable_biryani": null
+        },
+        "tasks": {
+            "Activity_1t4zomp:Activity_07pn419": {
+                "data": [
+                    {
+                        "bruschetta": null,
+                        "buffalo_wings": true,
+                        "onion_rings": true
+                    }
+                ]
+            },
+            "Activity_1t4zomp:Activity_0ahp0jr": {
+                "data": [
+                    {
+                        "chicken_noodle_soup": true,
+                        "french_onion_soup": null,
+                        "name": "Henry",
+                        "roasted_pumpkin_soup": true,
+                        "tom_yum_soup": null
+                    }
+                ]
+            },
+            "Activity_1t4zomp:Activity_1dhi6tb": {
+                "data": [
+                    {
+                        "chicken_noodle_soup": true,
+                        "french_onion_soup": null,
+                        "key_lime_pie": true,
+                        "name": "Henry",
+                        "new_york_cheesecake": null,
+                        "red_velvet_cake": true,
+                        "roasted_pumpkin_soup": true,
+                        "thai_mango_sticky_rice": null,
+                        "tiramisu": null,
+                        "tom_yum_soup": null
+                    }
+                ]
+            },
+            "Activity_1t4zomp:Activity_1wc42e5": {
+                "data": [
+                    {
+                        "beef_lasagna": true,
+                        "bruschetta": null,
+                        "buffalo_wings": true,
+                        "chicken_cordon_bleu": null,
+                        "onion_rings": true,
+                        "scallops_with_basil_risotto": true,
+                        "turkey_enchilada": null,
+                        "vegetable_biryani": null
+                    }
+                ]
+            },
+            "Food_Ordering_Process:Activity_0gt23x8": {
+                "data": [
+                    {
+                        "name": "Henry"
+                    }
+                ]
+            },
+            "Food_Ordering_Process:Activity_0in2gie": {
+                "data": [
+                    {}
+                ]
+            },
+            "Food_Ordering_Process:Activity_12as3jo": {
+                "data": [
+                    {
+                        "appetizers": [
+                            "Buffalo Wings",
+                            "Onion Rings"
+                        ],
+                        "cost": 78,
+                        "desserts": [
+                            "Key Lime Pie",
+                            "Red Velvet Cake"
+                        ],
+                        "mains": [
+                            "Scallops with Basil Risotto",
+                            "Beef Lasagna"
+                        ],
+                        "soups": [
+                            "Chicken Noodle Soup",
+                            "Roasted Pumpkin Soup"
+                        ]
+                    }
+                ]
+            },
+            "Handle_Payment:Activity_1hsjbbi": {
+                "data": [
+                    {
+                        "pay_on_delivery": true,
+                        "pay_online": null
+                    }
+                ]
+            },
+            "Handle_Payment:Activity_1qwbmco": {
+                "data": [
+                    {
+                        "success": true
+                    }
+                ]
+            }
+        }
+    },
+    "test_case_for_process_instance_6482": {
+        "expected_output_json": {
+            "appetizers": [
+                "Bruschetta",
+                "Buffalo Wings",
+                "Onion Rings"
+            ],
+            "beef_lasagna": true,
+            "bruschetta": true,
+            "buffalo_wings": true,
+            "chicken_cordon_bleu": true,
+            "chicken_noodle_soup": true,
+            "cost": 173,
+            "desserts": [
+                "Key Lime Pie",
+                "Red Velvet Cake",
+                "New York Cheesecake",
+                "Thai Mango Sticky Rice",
+                "Tiramisu"
+            ],
+            "french_onion_soup": true,
+            "key_lime_pie": true,
+            "mains": [
+                "Chicken Cordon Bleu",
+                "Vegetable Biryani",
+                "Scallops with Basil Risotto",
+                "Beef Lasagna",
+                "Turkeyb Enchilada"
+            ],
+            "name": "Levi",
+            "new_york_cheesecake": true,
+            "onion_rings": true,
+            "red_velvet_cake": true,
+            "roasted_pumpkin_soup": true,
+            "scallops_with_basil_risotto": true,
+            "soups": [
+                "Chicken Noodle Soup",
+                "FrenchOnion Soup",
+                "Roasted Pumpkin Soup",
+                "Tom Yum Soup"
+            ],
+            "success": true,
+            "thai_mango_sticky_rice": true,
+            "tiramisu": true,
+            "tom_yum_soup": true,
+            "turkey_enchilada": true,
+            "vegetable_biryani": true
+        },
+        "tasks": {
+            "Activity_1t4zomp:Activity_07pn419": {
+                "data": [
+                    {
+                        "bruschetta": true,
+                        "buffalo_wings": true,
+                        "onion_rings": true
+                    }
+                ]
+            },
+            "Activity_1t4zomp:Activity_0ahp0jr": {
+                "data": [
+                    {
+                        "chicken_noodle_soup": true,
+                        "french_onion_soup": true,
+                        "name": "Levi",
+                        "roasted_pumpkin_soup": true,
+                        "tom_yum_soup": true
+                    }
+                ]
+            },
+            "Activity_1t4zomp:Activity_1dhi6tb": {
+                "data": [
+                    {
+                        "chicken_noodle_soup": true,
+                        "french_onion_soup": true,
+                        "key_lime_pie": true,
+                        "name": "Levi",
+                        "new_york_cheesecake": true,
+                        "red_velvet_cake": true,
+                        "roasted_pumpkin_soup": true,
+                        "thai_mango_sticky_rice": true,
+                        "tiramisu": true,
+                        "tom_yum_soup": true
+                    }
+                ]
+            },
+            "Activity_1t4zomp:Activity_1wc42e5": {
+                "data": [
+                    {
+                        "beef_lasagna": true,
+                        "bruschetta": true,
+                        "buffalo_wings": true,
+                        "chicken_cordon_bleu": true,
+                        "onion_rings": true,
+                        "scallops_with_basil_risotto": true,
+                        "turkey_enchilada": true,
+                        "vegetable_biryani": true
+                    }
+                ]
+            },
+            "Food_Ordering_Process:Activity_0gt23x8": {
+                "data": [
+                    {
+                        "name": "Levi"
+                    }
+                ]
+            },
+            "Food_Ordering_Process:Activity_0in2gie": {
+                "data": [
+                    {}
+                ]
+            },
+            "Food_Ordering_Process:Activity_12as3jo": {
+                "data": [
+                    {
+                        "appetizers": [
+                            "Bruschetta",
+                            "Buffalo Wings",
+                            "Onion Rings"
+                        ],
+                        "cost": 173,
+                        "desserts": [
+                            "Key Lime Pie",
+                            "Red Velvet Cake",
+                            "New York Cheesecake",
+                            "Thai Mango Sticky Rice",
+                            "Tiramisu"
+                        ],
+                        "mains": [
+                            "Chicken Cordon Bleu",
+                            "Vegetable Biryani",
+                            "Scallops with Basil Risotto",
+                            "Beef Lasagna",
+                            "Turkeyb Enchilada"
+                        ],
+                        "soups": [
+                            "Chicken Noodle Soup",
+                            "FrenchOnion Soup",
+                            "Roasted Pumpkin Soup",
+                            "Tom Yum Soup"
+                        ]
+                    }
+                ]
+            },
+            "Handle_Payment:Activity_11ph807": {
+                "data": [
+                    {
+                        "card_number": "1111-2222-3333-4444",
+                        "success": true
+                    }
+                ]
+            },
+            "Handle_Payment:Activity_1hsjbbi": {
+                "data": [
+                    {
+                        "pay_on_delivery": false,
+                        "pay_online": true
+                    }
+                ]
+            }
+        }
+    }
+}

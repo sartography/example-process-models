@@ -1,0 +1,250 @@
+{
+    "test_case_for_process_instance_6483": {
+        "expected_output_json": {
+            "flavor": {
+                "color": "#D0DBFF",
+                "description": "Mystery blend of multiple fruit flavors",
+                "name": "X-Fruit Fusion"
+            },
+            "gator_select": [
+                {
+                    "label": "Glacier Freeze",
+                    "value": "Glacier Freeze"
+                },
+                {
+                    "label": "Fierce Grape",
+                    "value": "Fierce Grape"
+                },
+                {
+                    "label": "Fruit Punch",
+                    "value": "Fruit Punch"
+                },
+                {
+                    "label": "Lemon-Lime",
+                    "value": "Lemon-Lime"
+                },
+                {
+                    "label": "Orange",
+                    "value": "Orange"
+                },
+                {
+                    "label": "Riptide Rush",
+                    "value": "Riptide Rush"
+                },
+                {
+                    "label": "Strawberry Lemonade",
+                    "value": "Strawberry Lemonade"
+                },
+                {
+                    "label": "Sweat Strawberry",
+                    "value": "Sweat Strawberry"
+                },
+                {
+                    "label": "Tropical Punch",
+                    "value": "Tropical Punch"
+                },
+                {
+                    "label": "X-Fruit Fusion",
+                    "value": "X-Fruit Fusion"
+                }
+            ],
+            "selected": "Fierce Grape",
+            "selected_flavor": {
+                "color": "#AA77CC",
+                "description": "Bold and intense grape flavor",
+                "name": "Fierce Grape"
+            }
+        },
+        "tasks": {
+            "Process_json_file_as_data_store_95sczqr:Activity_1tndkzk": {
+                "data": [
+                    {
+                        "flavor": {
+                            "color": "#D0DBFF",
+                            "description": "Mystery blend of multiple fruit flavors",
+                            "name": "X-Fruit Fusion"
+                        },
+                        "gator_select": [
+                            {
+                                "label": "Glacier Freeze",
+                                "value": "Glacier Freeze"
+                            },
+                            {
+                                "label": "Fierce Grape",
+                                "value": "Fierce Grape"
+                            },
+                            {
+                                "label": "Fruit Punch",
+                                "value": "Fruit Punch"
+                            },
+                            {
+                                "label": "Lemon-Lime",
+                                "value": "Lemon-Lime"
+                            },
+                            {
+                                "label": "Orange",
+                                "value": "Orange"
+                            },
+                            {
+                                "label": "Riptide Rush",
+                                "value": "Riptide Rush"
+                            },
+                            {
+                                "label": "Strawberry Lemonade",
+                                "value": "Strawberry Lemonade"
+                            },
+                            {
+                                "label": "Sweat Strawberry",
+                                "value": "Sweat Strawberry"
+                            },
+                            {
+                                "label": "Tropical Punch",
+                                "value": "Tropical Punch"
+                            },
+                            {
+                                "label": "X-Fruit Fusion",
+                                "value": "X-Fruit Fusion"
+                            }
+                        ],
+                        "selected_flavor": {
+                            "color": "#AA77CC",
+                            "description": "Bold and intense grape flavor",
+                            "name": "Fierce Grape"
+                        }
+                    }
+                ]
+            },
+            "Process_json_file_as_data_store_95sczqr:Activity_1uby4vn": {
+                "data": [
+                    {
+                        "selected": "Fierce Grape"
+                    }
+                ]
+            }
+        }
+    },
+    "test_case_for_process_instance_6484": {
+        "expected_output_json": {
+            "flavor": {
+                "color": "#D0DBFF",
+                "description": "Mystery blend of multiple fruit flavors",
+                "name": "X-Fruit Fusion"
+            },
+            "gator_select": [
+                {
+                    "label": "Glacier Freeze",
+                    "value": "Glacier Freeze"
+                },
+                {
+                    "label": "Fierce Grape",
+                    "value": "Fierce Grape"
+                },
+                {
+                    "label": "Fruit Punch",
+                    "value": "Fruit Punch"
+                },
+                {
+                    "label": "Lemon-Lime",
+                    "value": "Lemon-Lime"
+                },
+                {
+                    "label": "Orange",
+                    "value": "Orange"
+                },
+                {
+                    "label": "Riptide Rush",
+                    "value": "Riptide Rush"
+                },
+                {
+                    "label": "Strawberry Lemonade",
+                    "value": "Strawberry Lemonade"
+                },
+                {
+                    "label": "Sweat Strawberry",
+                    "value": "Sweat Strawberry"
+                },
+                {
+                    "label": "Tropical Punch",
+                    "value": "Tropical Punch"
+                },
+                {
+                    "label": "X-Fruit Fusion",
+                    "value": "X-Fruit Fusion"
+                }
+            ],
+            "selected": "Orange",
+            "selected_flavor": {
+                "color": "#FFA500",
+                "description": "Bright and juicy orange flavor",
+                "name": "Orange"
+            }
+        },
+        "tasks": {
+            "Process_json_file_as_data_store_95sczqr:Activity_1tndkzk": {
+                "data": [
+                    {
+                        "flavor": {
+                            "color": "#D0DBFF",
+                            "description": "Mystery blend of multiple fruit flavors",
+                            "name": "X-Fruit Fusion"
+                        },
+                        "gator_select": [
+                            {
+                                "label": "Glacier Freeze",
+                                "value": "Glacier Freeze"
+                            },
+                            {
+                                "label": "Fierce Grape",
+                                "value": "Fierce Grape"
+                            },
+                            {
+                                "label": "Fruit Punch",
+                                "value": "Fruit Punch"
+                            },
+                            {
+                                "label": "Lemon-Lime",
+                                "value": "Lemon-Lime"
+                            },
+                            {
+                                "label": "Orange",
+                                "value": "Orange"
+                            },
+                            {
+                                "label": "Riptide Rush",
+                                "value": "Riptide Rush"
+                            },
+                            {
+                                "label": "Strawberry Lemonade",
+                                "value": "Strawberry Lemonade"
+                            },
+                            {
+                                "label": "Sweat Strawberry",
+                                "value": "Sweat Strawberry"
+                            },
+                            {
+                                "label": "Tropical Punch",
+                                "value": "Tropical Punch"
+                            },
+                            {
+                                "label": "X-Fruit Fusion",
+                                "value": "X-Fruit Fusion"
+                            }
+                        ],
+                        "selected_flavor": {
+                            "color": "#FFA500",
+                            "description": "Bright and juicy orange flavor",
+                            "name": "Orange"
+                        }
+                    }
+                ]
+            },
+            "Process_json_file_as_data_store_95sczqr:Activity_1uby4vn": {
+                "data": [
+                    {
+                        "selected": "Orange"
+                    }
+                ]
+            }
+        }
+    }
+}

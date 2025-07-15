@@ -1,0 +1,21 @@
+{
+"type": "object",
+"properties": {
+    "composer_in_form": {
+      "type": "object",
+      "title" : "Composers",
+      "properties": {
+        "composer": {
+        "type": "string",
+        "title" : "Composer",
+        "description": "Name of the Composer"
+        },
+        "genre": {
+        "type": "string",
+        "title" : "Genre",
+        "description": "Genre of the composer's music"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+   "title":"File upload time",
+   "description":"",
+   "properties":{
+      "uploaded_file":{
+         "type":"string",
+         "title":"File to upload",
+         "format":"data-url"
+      }
+   }
+}

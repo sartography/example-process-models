@@ -1,0 +1,40 @@
+{
+    "test_case_for_process_instance_6474": {
+        "expected_output_json": {
+            "spam_thought": "greedy text messages"
+        },
+        "tasks": {
+            "Process_ndztlol:Activity_0e776cx": {
+                "data": [
+                    {
+                        "spam_thought": "greedy text messages"
+                    }
+                ]
+            },
+            "Process_ndztlol:Activity_0oh37zx": {
+                "data": [
+                    {}
+                ]
+            }
+        }
+    },
+    "test_case_for_process_instance_6475": {
+        "expected_output_json": {
+            "spam_thought": "the whole bloody internet"
+        },
+        "tasks": {
+            "Process_ndztlol:Activity_0e776cx": {
+                "data": [
+                    {
+                        "spam_thought": "the whole bloody internet"
+                    }
+                ]
+            },
+            "Process_ndztlol:Activity_0oh37zx": {
+                "data": [
+                    {}
+                ]
+            }
+        }
+    }
+}

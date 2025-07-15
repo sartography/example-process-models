@@ -1,0 +1,9 @@
+{
+    "description": "Learn some Python fundamentals, how data moves through a workflow process, and how you can present data and information using Markdown. Take a look at the BPMN file and its associated diagram to get a feel for how data can be used.",
+    "display_name": "Understanding Data (part 1)",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "python.bpmn",
+    "primary_process_id": "Process_1smb9b5"
+}

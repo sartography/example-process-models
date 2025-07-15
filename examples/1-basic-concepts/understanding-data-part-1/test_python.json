@@ -1,0 +1,85 @@
+{
+    "test_case_for_process_instance_6477": {
+        "expected_output_json": {
+            "age": 54,
+            "api_result": {
+                "message": "https://images.dog.ceo/breeds/elkhound-norwegian/n02091467_4270.jpg",
+                "status": "success"
+            },
+            "cabinet": {
+                "Secretary of State": {
+                    "age": 60,
+                    "children": [
+                        "William Jr.",
+                        "Frederick",
+                        "Augustus",
+                        "Anna"
+                    ],
+                    "name": "William H. Seward"
+                }
+            },
+            "cost": 15.0,
+            "data_objects": {
+                "children": [
+                    "Robert",
+                    "Edward",
+                    "Tad",
+                    "Willie"
+                ]
+            },
+            "delivery_date": "2024-05-29",
+            "firstName": "Cherry",
+            "height": 1.93,
+            "is_married": true,
+            "my_age": 55,
+            "size": "medium"
+        },
+        "tasks": {
+            "Process_1smb9b5:Activity_0n8y9m7": {
+                "data": [
+                    {}
+                ]
+            },
+            "Process_1smb9b5:Activity_14uu3ah": {
+                "data": [
+                    {
+                        "age": 54,
+                        "cabinet": {
+                            "Secretary of State": {
+                                "age": 60,
+                                "children": [
+                                    "William Jr.",
+                                    "Frederick",
+                                    "Augustus",
+                                    "Anna"
+                                ],
+                                "name": "William H. Seward"
+                            }
+                        },
+                        "delivery_date": "2024-05-29",
+                        "firstName": "Cherry",
+                        "height": 1.93,
+                        "is_married": true,
+                        "my_age": 55,
+                        "size": "medium"
+                    }
+                ]
+            },
+            "Process_1smb9b5:Activity_1ct9c0w": {
+                "data": [
+                    {}
+                ]
+            },
+            "Process_1smb9b5:Activity_1v40j82": {
+                "data": [
+                    {
+                        "api_result": {
+                            "message": "https://images.dog.ceo/breeds/elkhound-norwegian/n02091467_4270.jpg",
+                            "status": "success"
+                        }
+                    }
+                ]
+            }
+        }
+    }
+}

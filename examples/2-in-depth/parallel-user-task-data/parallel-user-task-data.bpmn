@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_96f6665" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.0.0-dev">
+  <bpmn:process id="Process_parallel_user_task_data_k5yzqsp" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_17db3yp</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_17db3yp" sourceRef="StartEvent_1" targetRef="Activity_0qpzdpu" />
+    <bpmn:endEvent id="EndEvent_1">
+      <bpmn:incoming>Flow_14sanat</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_12pkbxb" sourceRef="Activity_0qpzdpu" targetRef="Gateway_106dqdl" />
+    <bpmn:sequenceFlow id="Flow_1b7qndg" sourceRef="Gateway_106dqdl" targetRef="Activity_0lr7p7b" />
+    <bpmn:parallelGateway id="Gateway_106dqdl">
+      <bpmn:incoming>Flow_12pkbxb</bpmn:incoming>
+      <bpmn:outgoing>Flow_1b7qndg</bpmn:outgoing>
+      <bpmn:outgoing>Flow_046x85c</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="Activity_0lr7p7b" name="task B">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="taskb-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="taskb-uischema.json" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1b7qndg</bpmn:incoming>
+      <bpmn:outgoing>Flow_0vwvwm0</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_046x85c" sourceRef="Gateway_106dqdl" targetRef="Activity_03ogjck" />
+    <bpmn:sequenceFlow id="Flow_0vwvwm0" sourceRef="Activity_0lr7p7b" targetRef="Gateway_142za7c" />
+    <bpmn:sequenceFlow id="Flow_1j17i3u" sourceRef="Activity_03ogjck" targetRef="Gateway_142za7c" />
+    <bpmn:userTask id="Activity_03ogjck" name="task &#10;A">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="taska-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="taska-uischema.json" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_046x85c</bpmn:incoming>
+      <bpmn:outgoing>Flow_1j17i3u</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_14sanat" sourceRef="Gateway_142za7c" targetRef="EndEvent_1" />
+    <bpmn:parallelGateway id="Gateway_142za7c">
+      <bpmn:incoming>Flow_0vwvwm0</bpmn:incoming>
+      <bpmn:incoming>Flow_1j17i3u</bpmn:incoming>
+      <bpmn:outgoing>Flow_14sanat</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:scriptTask id="Activity_0qpzdpu" name="generate C data">
+      <bpmn:extensionElements>
+        <spiffworkflow:instructionsForEndUser>This is an example **Manual Task**. A **Manual Task** is designed to allow someone to complete a task outside of the system and then report back that it is complete. You can click the *Continue* button to proceed. When you are done running this process, you can edit the **Process Model** to include a:
+
+ * **Script Task** - write a short snippet of python code to update some data
+ *  **User Task** - generate a form that collects information from a user
+ * **Service Task** - communicate with an external API to fetch or update some data.
+
+You can also change the text you are reading here by updating the *Instructions* on this example manual task.</spiffworkflow:instructionsForEndUser>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_17db3yp</bpmn:incoming>
+      <bpmn:outgoing>Flow_12pkbxb</bpmn:outgoing>
+      <bpmn:script>c_data = "excellent"</bpmn:script>
+    </bpmn:scriptTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_parallel_user_task_data_k5yzqsp">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_14za570_di" bpmnElement="EndEvent_1">
+        <dc:Bounds x="962" y="142" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1eykzz5_di" bpmnElement="Gateway_106dqdl">
+        <dc:Bounds x="405" y="152" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0as8wzz_di" bpmnElement="Activity_0lr7p7b">
+        <dc:Bounds x="560" y="240" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1k4mmdr_di" bpmnElement="Activity_03ogjck">
+        <dc:Bounds x="560" y="30" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1b7wttw_di" bpmnElement="Gateway_142za7c">
+        <dc:Bounds x="775" y="105" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0cnh06j_di" bpmnElement="Activity_0qpzdpu">
+        <dc:Bounds x="270" y="137" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_17db3yp_di" bpmnElement="Flow_17db3yp">
+        <di:waypoint x="215" y="177" />
+        <di:waypoint x="270" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12pkbxb_di" bpmnElement="Flow_12pkbxb">
+        <di:waypoint x="370" y="177" />
+        <di:waypoint x="405" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1b7qndg_di" bpmnElement="Flow_1b7qndg">
+        <di:waypoint x="430" y="202" />
+        <di:waypoint x="430" y="280" />
+        <di:waypoint x="560" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_046x85c_di" bpmnElement="Flow_046x85c">
+        <di:waypoint x="430" y="152" />
+        <di:waypoint x="430" y="70" />
+        <di:waypoint x="560" y="70" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vwvwm0_di" bpmnElement="Flow_0vwvwm0">
+        <di:waypoint x="660" y="280" />
+        <di:waypoint x="800" y="280" />
+        <di:waypoint x="800" y="155" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1j17i3u_di" bpmnElement="Flow_1j17i3u">
+        <di:waypoint x="660" y="70" />
+        <di:waypoint x="800" y="70" />
+        <di:waypoint x="800" y="105" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14sanat_di" bpmnElement="Flow_14sanat">
+        <di:waypoint x="825" y="130" />
+        <di:waypoint x="894" y="130" />
+        <di:waypoint x="894" y="160" />
+        <di:waypoint x="962" y="160" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

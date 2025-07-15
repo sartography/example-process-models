@@ -1,0 +1,8 @@
+{
+    "correlation_keys": null,
+    "correlation_properties": null,
+    "data_store_specifications": {},
+    "description": "Often a shared process group can be used to house process models so they can be shared with other processes using a Call Activity.",
+    "display_name": "Shared",
+    "messages": null
+}

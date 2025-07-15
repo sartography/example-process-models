@@ -1,0 +1,9 @@
+{
+    "description": "Can we see data from all parallel branches?",
+    "display_name": "Parallel User Task Data",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "parallel-user-task-data.bpmn",
+    "primary_process_id": "Process_parallel_user_task_data_k5yzqsp"
+}

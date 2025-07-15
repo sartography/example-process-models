@@ -1,0 +1,35 @@
+{
+    "test_case_for_process_instance_6501": {
+        "expected_output_json": {
+            "approve": true,
+            "cheese": "Cheddar",
+            "email_sent": true
+        },
+        "tasks": {
+            "edit_till_action:Activity_03poywp": {
+                "data": [
+                    {
+                        "approve": true
+                    }
+                ]
+            },
+            "edit_till_action:Activity_0acf9by": {
+                "data": [
+                    {
+                        "cheese": "Cheddar"
+                    }
+                ]
+            },
+            "edit_till_action:Activity_1s7fftn": {
+                "data": [
+                    {}
+                ]
+            },
+            "edit_till_action:Activity_1x1ze63": {
+                "data": [
+                    {}
+                ]
+            }
+        }
+    }
+}

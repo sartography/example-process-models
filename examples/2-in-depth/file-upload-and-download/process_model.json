@@ -1,0 +1,9 @@
+{
+    "description": "Shows how to build a form that allows for uploading a document and then presenting that file for download in a later step.",
+    "display_name": "File upload and download",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "file-upload-and-download.bpmn",
+    "primary_process_id": "Process_file_upload_and_download_t46cscs"
+}

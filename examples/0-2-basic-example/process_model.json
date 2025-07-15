@@ -1,0 +1,14 @@
+{
+    "description": "A more complete BPMN Model that introduces a number of core concepts working together.",
+    "display_name": "Essentials Example ",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": [
+        {
+            "key": "pushups",
+            "path": "pushups"
+        }
+    ],
+    "primary_file_name": "user-guide-basics.bpmn",
+    "primary_process_id": "Proccess_general22"
+}

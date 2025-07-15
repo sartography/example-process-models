@@ -1,0 +1,68 @@
+{
+    "test_case_for_process_instance_6466": {
+        "expected_output_json": {
+            "base_price": 14.0,
+            "cost_per_topping": 1.5,
+            "size": "Medium",
+            "toppings": [
+                "Pepperoni",
+                "Spam",
+                "Squash"
+            ],
+            "total_cost": 18.5
+        },
+        "tasks": {
+            "Process_5bmdbcp:Activity_0tfliws": {
+                "data": [
+                    {
+                        "total_cost": 18.5
+                    }
+                ]
+            },
+            "Process_5bmdbcp:Activity_1vwj16k": {
+                "data": [
+                    {
+                        "size": "Medium",
+                        "toppings": [
+                            "Pepperoni",
+                            "Spam",
+                            "Squash"
+                        ]
+                    }
+                ]
+            }
+        }
+    },
+    "test_case_for_process_instance_6467": {
+        "expected_output_json": {
+            "base_price": 16.0,
+            "cost_per_topping": 2.0,
+            "size": "Large",
+            "toppings": [
+                "Squash",
+                "Peanuts"
+            ],
+            "total_cost": 20.0
+        },
+        "tasks": {
+            "Process_5bmdbcp:Activity_0tfliws": {
+                "data": [
+                    {
+                        "total_cost": 20.0
+                    }
+                ]
+            },
+            "Process_5bmdbcp:Activity_1vwj16k": {
+                "data": [
+                    {
+                        "size": "Large",
+                        "toppings": [
+                            "Squash",
+                            "Peanuts"
+                        ]
+                    }
+                ]
+            }
+        }
+    }
+}

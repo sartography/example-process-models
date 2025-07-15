@@ -1,0 +1,4 @@
+{
+  "error_strategy": "Catch Some Errors",
+  "http_status_code_category": "2xx success"
+}

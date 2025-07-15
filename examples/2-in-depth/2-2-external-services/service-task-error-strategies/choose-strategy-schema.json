@@ -1,0 +1,120 @@
+{
+  "title": "Service Task Error Handling Strategies",
+  "description": "Select the error handling strategy from the list below and provide any additional details requested.  All strategies use a single Intermediate Error Event attached to the Service Task.  How the error is handled is different for each strategy.",
+  "type": "object",
+  "properties": {
+    "error_strategy": {
+      "type": "string",
+      "title": "Strategy",
+      "enum": [
+        "Catch No Errors",
+        "Catch Some Errors",
+        "Catch All Errors"
+      ]
+    },
+    "http_status_code_category": {
+      "type": "string",
+      "title": "HTTP Status Code Category",
+      "enum": [
+        "1xx informational response",
+        "2xx success",
+        "3xx redirection",
+        "4xx client errors",
+        "5xx server errors"
+      ]
+    }
+  },
+  "required": [
+    "error_strategy",
+    "http_status_code_category"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "http_status_code_category": {
+            "type": "string",
+            "enum": [
+              "1xx informational response"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "http_status_code": {
+            "type": "string",
+            "title": "1xx Informational Response Status Codes",
+            "enum": [
+              "100 Continue",
+              "101 Switching Protocols",
+              "102 Processing",
+              "103 Early Hints"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "http_status_code_category": {
+            "type": "string",
+            "enum": [
+              "2xx success"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "http_200_status_code_object": {
+            "type": "object",
+            "title": "2xx Success Status Codes",
+            "properties": {
+              "http_200_status_code_field": {
+                "type": "string",
+                "title": "Select from these two status codes for the Catch Outliers option",
+                "enum": [
+                  "200 OK",
+                  "204 No Content"
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "http_status_code_category": {
+            "type": "string",
+            "enum": [
+              "3xx redirection"
+            ]
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "http_status_code": {
+            "type": "string",
+            "title": "3xx Redirection Status Codes",
+            "enum": [
+              "300 Multiple choices",
+              "301 Moved Permanently",
+              "302 Found",
+              "303 See Other",
+              "304 Not Modified",
+              "305 Use Proxy",
+              "306 Switch Proxy",
+              "307 Temporary Redirect",
+              "308 Permanent Redirect"
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_96f6665" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.0.0-dev">
+  <bpmn:process id="Get_Local_Date_Time" name="Get Local Date &#38; Time" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_17db3yp</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_17db3yp" sourceRef="StartEvent_1" targetRef="Activity_17611vf" />
+    <bpmn:endEvent id="EndEvent_1">
+      <bpmn:incoming>Flow_1ymz40v</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1ymz40v" sourceRef="Activity_17611vf" targetRef="EndEvent_1" />
+    <bpmn:scriptTask id="Activity_17611vf" name="Get Local Date and Time">
+      <bpmn:incoming>Flow_17db3yp</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ymz40v</bpmn:outgoing>
+      <bpmn:script># Check if ldt_tz was passed in
+# If not, use the default value
+try:
+  ldt_tz
+except NameError:
+  ldt_tz = "US/Eastern"
+
+# Convert time zone string to datetime object
+ldt_tz_obj = pytz.timezone(ldt_tz)
+
+# Get Local Time
+ldt_obj = datetime.now(ldt_tz_obj)
+
+# Check if ldt_date_format was passed in
+# If not, use the default value
+try:
+  ldt_date_format
+except NameError:
+  ldt_date_format = "MDY"
+
+if ldt_date_format == "YMD":
+  ldt_date_format_str = '%Y-%m-%d'
+elif ldt_date_format == "DMY":
+  ldt_date_format_str = '%d-%m-%Y'
+else:
+  ldt_date_format_str = '%m-%d-%Y'
+
+# Check if ldt_return was passed in
+# If not, set to all and return obj and all date and time strings
+try:
+  ldt_return
+except NameError:
+  ldt_return = "all"
+
+# if default format
+if ldt_return == "all":
+
+  # Set the local date string
+  local_date_str = ldt_obj.strftime(ldt_date_format_str)
+
+  # Check if ldt_time_format was passed in
+  # If not, use the default value
+  try:
+    ldt_time_format
+  except NameError:
+    ldt_time_format = "12"
+
+  # Set local time format
+  if ldt_time_format == "24":
+    ldt_time_format_str = '%H:%M:%S'
+  else:
+    ldt_time_format_str = '%I:%M:%S %p'
+
+  # Set local time string
+  ldt_local_time_str = ldt_obj.strftime(ldt_time_format_str)
+
+  # Set local datetime string
+  ldt_datetime_format_str = ldt_date_format_str + " " + ldt_time_format_str
+  ldt_local_datetime_str = ldt_obj.strftime(ldt_datetime_format_str)
+
+  # Delete unneeded variables
+  del(ldt_date_format_str)
+  del(ldt_time_format_str)
+  del(ldt_datetime_format_str)
+
+# Delete unneeded variable
+del(ldt_return)
+del(ldt_tz_obj)</bpmn:script>
+    </bpmn:scriptTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Get_Local_Date_Time">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_14za570_di" bpmnElement="EndEvent_1">
+        <dc:Bounds x="432" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1goufp7_di" bpmnElement="Activity_17611vf">
+        <dc:Bounds x="270" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_17db3yp_di" bpmnElement="Flow_17db3yp">
+        <di:waypoint x="215" y="177" />
+        <di:waypoint x="270" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ymz40v_di" bpmnElement="Flow_1ymz40v">
+        <di:waypoint x="370" y="177" />
+        <di:waypoint x="432" y="177" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

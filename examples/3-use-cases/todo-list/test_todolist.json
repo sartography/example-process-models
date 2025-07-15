@@ -1,0 +1,31 @@
+{
+    "test_case_for_process_instance_6497": {
+        "expected_output_json": {
+            "todoList": [
+                {
+                    "isComplete": true,
+                    "todoTitle": "Milk"
+                },
+                {
+                    "isComplete": true,
+                    "todoTitle": "Eggs"
+                },
+                {
+                    "isComplete": true,
+                    "todoTitle": "Bread"
+                },
+                {
+                    "isComplete": true,
+                    "todoTitle": "Butter"
+                }
+            ]
+        },
+        "tasks": {
+            "todo_list_process:manage_todo_list": {
+                "data": [
+                    {}
+                ]
+            }
+        }
+    }
+}

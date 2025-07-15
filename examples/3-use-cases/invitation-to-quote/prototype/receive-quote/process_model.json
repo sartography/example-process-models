@@ -1,0 +1,9 @@
+{
+    "description": "The company will receive quotes from the providers and begin evaluating the quotations under the following conditions: After the closing due date, regardless of the number of quotes received. Immediately, if before the closing due date the total number of requests sent have been received or if five quotes have been received if the number of requests was greater than five.",
+    "display_name": "Receive Quote",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "receive-quote.bpmn",
+    "primary_process_id": "Process_receive_quote_3zpn0oq"
+}

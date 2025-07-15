@@ -1,0 +1,9 @@
+{
+    "description": "Returns datetime object and strings set to the current local date and time based on a time zone, which defaults to \"US/Central\" if none is specified.",
+    "display_name": "Get Local Date and Time",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "get-local-date-and-time.bpmn",
+    "primary_process_id": "Get_Local_Date_Time"
+}

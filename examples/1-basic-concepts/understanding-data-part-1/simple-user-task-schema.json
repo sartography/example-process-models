@@ -1,0 +1,15 @@
+{
+  "title": "Date",
+  "description": "Forms can consume data and generate new data. In this case, a script task set up the firstName, so it is populated based on that value. But you can change it, so subsequent tasks will see whatever firstName you decide is correct.",
+  "type": "object",
+  "required": [
+    "firstName"
+  ],
+  "properties": {
+    "firstName": {
+      "type": "string",
+      "title": "My First Name",
+      "default": "Chuck"
+    }
+  }
+}

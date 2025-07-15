@@ -1,0 +1,166 @@
+{
+    "test_case_for_process_instance_6463": {
+        "expected_output_json": {
+            "color": "#ffd700",
+            "colors": {
+                "Alien Armpit": "#84D314",
+                "Flamingo Fandango": "#F6A8D6",
+                "Granny Smith Apple Accident": "#A8E4A0",
+                "Invisible Pink Unicorn": "#FF77A9",
+                "Laser Lemon": "#FFFF66",
+                "Ninja Black": "#1E1E1E",
+                "Teleportation Blue": "#7FDBFF",
+                "Toasted Marshmallow": "#F9E5C6",
+                "Yeti Frostbite": "#D5F2E3",
+                "Zombie Green": "#6ACD58"
+            },
+            "first_name": "Kelly",
+            "is_joke": true
+        },
+        "tasks": {
+            "Process_puxk39c:Activity_1f9v5wa": {
+                "data": [
+                    {}
+                ]
+            },
+            "Process_puxk39c:Activity_1jr7x9o": {
+                "data": [
+                    {}
+                ]
+            },
+            "Process_puxk39c:Activity_1r4u2ny": {
+                "data": [
+                    {
+                        "color": "#ffd700",
+                        "colors": [
+                            {
+                                "label": "Tickle Me Pink",
+                                "value": "#ffb6c1"
+                            },
+                            {
+                                "label": "Forget-Me-Not Blue",
+                                "value": "#c2dfff"
+                            },
+                            {
+                                "label": "Salmon Surprise",
+                                "value": "#f49ac1"
+                            },
+                            {
+                                "label": "Guacamole Green",
+                                "value": "#90ee90"
+                            },
+                            {
+                                "label": "Banana Mania",
+                                "value": "#ffd700"
+                            },
+                            {
+                                "label": "Indecisive Gray",
+                                "value": "#d3d3d3"
+                            },
+                            {
+                                "label": "Fiery Fuchsia",
+                                "value": "#cd5b45"
+                            },
+                            {
+                                "label": "Orange You Glad",
+                                "value": "#ffa500"
+                            },
+                            {
+                                "label": "Deep Sea Purple",
+                                "value": "#a020f0"
+                            },
+                            {
+                                "label": "Eggplant Envy",
+                                "value": "#800080"
+                            }
+                        ],
+                        "first_name": "Kelly",
+                        "is_joke": true
+                    }
+                ]
+            }
+        }
+    },
+    "test_case_for_process_instance_6464": {
+        "expected_output_json": {
+            "color": "#800080",
+            "colors": {
+                "Alien Armpit": "#84D314",
+                "Flamingo Fandango": "#F6A8D6",
+                "Granny Smith Apple Accident": "#A8E4A0",
+                "Invisible Pink Unicorn": "#FF77A9",
+                "Laser Lemon": "#FFFF66",
+                "Ninja Black": "#1E1E1E",
+                "Teleportation Blue": "#7FDBFF",
+                "Toasted Marshmallow": "#F9E5C6",
+                "Yeti Frostbite": "#D5F2E3",
+                "Zombie Green": "#6ACD58"
+            },
+            "first_name": "Mary",
+            "is_joke": false
+        },
+        "tasks": {
+            "Process_puxk39c:Activity_1f9v5wa": {
+                "data": [
+                    {}
+                ]
+            },
+            "Process_puxk39c:Activity_1jr7x9o": {
+                "data": [
+                    {}
+                ]
+            },
+            "Process_puxk39c:Activity_1r4u2ny": {
+                "data": [
+                    {
+                        "color": "#800080",
+                        "colors": [
+                            {
+                                "label": "Tickle Me Pink",
+                                "value": "#ffb6c1"
+                            },
+                            {
+                                "label": "Forget-Me-Not Blue",
+                                "value": "#c2dfff"
+                            },
+                            {
+                                "label": "Salmon Surprise",
+                                "value": "#f49ac1"
+                            },
+                            {
+                                "label": "Guacamole Green",
+                                "value": "#90ee90"
+                            },
+                            {
+                                "label": "Banana Mania",
+                                "value": "#ffd700"
+                            },
+                            {
+                                "label": "Indecisive Gray",
+                                "value": "#d3d3d3"
+                            },
+                            {
+                                "label": "Fiery Fuchsia",
+                                "value": "#cd5b45"
+                            },
+                            {
+                                "label": "Orange You Glad",
+                                "value": "#ffa500"
+                            },
+                            {
+                                "label": "Deep Sea Purple",
+                                "value": "#a020f0"
+                            },
+                            {
+                                "label": "Eggplant Envy",
+                                "value": "#800080"
+                            }
+                        ],
+                        "first_name": "Mary",
+                        "is_joke": false
+                    }
+                ]
+            }
+        }
+    }
+}

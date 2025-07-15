@@ -1,0 +1,9 @@
+{
+    "description": "Send an Invitation to Quote to a minimum of 3 providers.",
+    "display_name": "Request Quote",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "request-quote.bpmn",
+    "primary_process_id": "Process_request_quote_i2b128c"
+}

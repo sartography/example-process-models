@@ -1,0 +1,58 @@
+{
+    "test_case_for_process_instance_6487": {
+        "expected_output_json": {
+            "path": "Path A"
+        },
+        "tasks": {
+            "Process_escalation_events_iq40493:Activity_0qpzdpu": {
+                "data": [
+                    {
+                        "path": "Path A"
+                    }
+                ]
+            }
+        }
+    },
+    "test_case_for_process_instance_6488": {
+        "expected_output_json": {
+            "path": "Path B"
+        },
+        "tasks": {
+            "Process_escalation_events_iq40493:Activity_0qpzdpu": {
+                "data": [
+                    {
+                        "path": "Path B"
+                    }
+                ]
+            }
+        }
+    },
+    "test_case_for_process_instance_6489": {
+        "expected_output_json": {
+            "path": "Path C"
+        },
+        "tasks": {
+            "Process_escalation_events_iq40493:Activity_0qpzdpu": {
+                "data": [
+                    {
+                        "path": "Path C"
+                    }
+                ]
+            }
+        }
+    },
+    "test_case_for_process_instance_6490": {
+        "expected_output_json": {
+            "path": "Path D"
+        },
+        "tasks": {
+            "Process_escalation_events_iq40493:Activity_0qpzdpu": {
+                "data": [
+                    {
+                        "path": "Path D"
+                    }
+                ]
+            }
+        }
+    }
+}

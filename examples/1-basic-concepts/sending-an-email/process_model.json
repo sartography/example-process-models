@@ -1,0 +1,9 @@
+{
+    "description": "This process will show how to use a service task to send an email.  For security reasons, the email will be sent to a trap so you can't use our system to spam people, but it does cover all the settings you would need to use.  ",
+    "display_name": "Sending an email",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "sending-an-email.bpmn",
+    "primary_process_id": "Process_sending_an_email_scf74ue"
+}

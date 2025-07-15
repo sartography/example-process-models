@@ -1,0 +1,10 @@
+{
+  "type": "object",
+  "properties": {
+    "color": {
+      "type": "string",
+      "format": "string",
+      "title": "Select a color"
+    }
+  }
+}

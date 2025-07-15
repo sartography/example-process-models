@@ -1,0 +1,24 @@
+{
+  "properties": {
+    "submittedQuote": {
+      "title": "Submit Quote",
+      "description": "Submit Quote for requested product or service",
+      "type": "object",
+      "properties": {
+        "vendorName": {
+          "type": "string",
+          "title": "Vendor Name"
+        },
+        "quoteAmt": {
+					"type": "number",
+          "title": "Quote Amount",
+					"minimum": 0.01
+        }
+      },
+      "required": [
+        "vendorName",
+        "quoteAmt"
+      ]
+    }
+  }
+}

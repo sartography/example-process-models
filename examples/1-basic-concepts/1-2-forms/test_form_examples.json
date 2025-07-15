@@ -1,0 +1,73 @@
+{
+    "test_case_for_process_instance_6465": {
+        "expected_output_json": {
+            "age": 34,
+            "bio": "Michael Kennedy, an avid traveler and passionate environmentalist, dedicates his time to advocating for sustainable practices worldwide. With a keen eye for detail and a knack for problem-solving, he leads initiatives aimed at preserving natural habitats and fostering eco-conscious communities.",
+            "delivery_date": "2024-05-25",
+            "favoriteFruit": "oranges",
+            "firstName": "Micheal",
+            "fruits": [
+                {
+                    "label": "Apples",
+                    "value": "apples"
+                },
+                {
+                    "label": "Oranges",
+                    "value": "oranges"
+                },
+                {
+                    "label": "Bananas",
+                    "value": "bananas"
+                }
+            ],
+            "hatedFruit": "apples",
+            "lastName": "Kennedy",
+            "stage": "new1",
+            "telephone": "+1 800-764-6895"
+        },
+        "tasks": {
+            "Process_a7vdmu0:Activity_14d9qci": {
+                "data": [
+                    {
+                        "stage": "new1"
+                    }
+                ]
+            },
+            "Process_a7vdmu0:Activity_16bfpis": {
+                "data": [
+                    {
+                        "age": 34,
+                        "bio": "Michael Kennedy, an avid traveler and passionate environmentalist, dedicates his time to advocating for sustainable practices worldwide. With a keen eye for detail and a knack for problem-solving, he leads initiatives aimed at preserving natural habitats and fostering eco-conscious communities.",
+                        "delivery_date": "2024-05-25",
+                        "favoriteFruit": "oranges",
+                        "firstName": "Micheal",
+                        "fruits": [
+                            {
+                                "label": "Apples",
+                                "value": "apples"
+                            },
+                            {
+                                "label": "Oranges",
+                                "value": "oranges"
+                            },
+                            {
+                                "label": "Bananas",
+                                "value": "bananas"
+                            }
+                        ],
+                        "hatedFruit": "apples",
+                        "lastName": "Kennedy",
+                        "telephone": "+1 800-764-6895"
+                    }
+                ]
+            },
+            "Process_a7vdmu0:Activity_1vh3soz": {
+                "data": [
+                    {
+                        "stage": "new1"
+                    }
+                ]
+            }
+        }
+    }
+}

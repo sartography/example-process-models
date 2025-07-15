@@ -1,0 +1,9 @@
+{
+  "color": {
+    "ui:widget": "typeahead",
+    "ui:options": {
+      "category": "colors",
+      "itemFormat": "{name}"
+    }
+  }
+}

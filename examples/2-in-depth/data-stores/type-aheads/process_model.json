@@ -1,0 +1,9 @@
+{
+    "description": "Demonstrates how to create and use a type-ahead data store.",
+    "display_name": "Type Aheads",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "type-aheads.bpmn",
+    "primary_process_id": "Process_type_aheads_buun2rn"
+}

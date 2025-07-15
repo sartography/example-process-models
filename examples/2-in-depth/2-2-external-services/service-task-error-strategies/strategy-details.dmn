@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" id="Definitions_76910d7" name="DRD" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="Service_Task_Error_Strategy_Details" name="Service Task Error Strategy Details">
+    <decisionTable id="decisionTable_1">
+      <input id="InputClause_04ahboc" label="HTTP Status Code Category">
+        <inputExpression id="LiteralExpression_1s579p5" typeRef="string">
+          <text>http_status_code_category</text>
+        </inputExpression>
+      </input>
+      <output id="output_1" label="Wiremock Base URL Add On" name="wiremock_base_url_add_on" typeRef="string" biodi:width="244" />
+      <rule id="DecisionRule_1tplfkj">
+        <inputEntry id="UnaryTests_14ks6ss">
+          <text>"5xx server errors"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_03esh8s">
+          <text>"/get_server_error/500"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0y3mwzs">
+        <inputEntry id="UnaryTests_1xqdzxb">
+          <text>"4xx client errors"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0z7rnz7">
+          <text>"/get_client_error/400"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_0x46m1y">
+        <inputEntry id="UnaryTests_01dgdbt">
+          <text>"3xx redirection"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_1pboyew">
+          <text>"/get_redirection/300"</text>
+        </outputEntry>
+      </rule>
+      <rule id="DecisionRule_1fojgv8">
+        <inputEntry id="UnaryTests_1uf55qy">
+          <text>"2xx success"</text>
+        </inputEntry>
+        <outputEntry id="LiteralExpression_0sf2z7n">
+          <text>"/get_success/200"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="DMNDiagram_1cykosu">
+      <dmndi:DMNShape id="DMNShape_1dhfq2s" dmnElementRef="Service_Task_Error_Strategy_Details">
+        <dc:Bounds height="80" width="180" x="157" y="151" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

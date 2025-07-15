@@ -1,0 +1,8 @@
+{
+    "correlation_keys": null,
+    "correlation_properties": null,
+    "data_store_specifications": {},
+    "description": "A step-by-step evolution of the processes to support the common use case of requesting and receiving quotes. The initial requirements for this Use Case were to build a prototype which would allow a company is sourcing a product or service and must send an Invitation to Quote to a minimum of 3 providers.  The providers should submit their company name and quote amount. The company will begin evaluating the quotations under the following conditions: After the closing due date, regardless of the number of quotes received. Immediately, if more than 5 quotes are received before the closing due.",
+    "display_name": "Invitation to Quote",
+    "messages": null
+}

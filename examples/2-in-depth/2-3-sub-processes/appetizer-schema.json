@@ -1,0 +1,22 @@
+{
+  "title": "Appetizer",
+  "description": "Please select your Appetizer(s)",
+  "properties": {
+    "onion_rings": {
+      "type": "boolean",
+      "title": "Onion Rings",
+      "default": false
+    },
+    "buffalo_wings": {
+      "type": "boolean",
+      "title": "Buffalo wings",
+      "default": false
+    },
+    "bruschetta": {
+      "type": "boolean",
+      "title": "Bruschetta",
+      "default": false
+    }
+  },
+  "required": []
+}

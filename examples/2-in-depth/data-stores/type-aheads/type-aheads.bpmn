@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_96f6665" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.0.0-dev">
+  <bpmn:dataStore id="typeahead" name="TypeaheadDataStore" />
+  <bpmn:process id="Process_type_aheads_buun2rn" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_17db3yp</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_17db3yp" sourceRef="StartEvent_1" targetRef="Activity_0qpzdpu" />
+    <bpmn:endEvent id="EndEvent_1">
+      <bpmn:incoming>Flow_1xzn0re</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_12pkbxb" sourceRef="Activity_0qpzdpu" targetRef="Activity_1sp5y3x" />
+    <bpmn:sequenceFlow id="Flow_1xzn0re" sourceRef="Activity_1sp5y3x" targetRef="EndEvent_1" />
+    <bpmn:userTask id="Activity_1sp5y3x" name="Use Type Ahead">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="simple-form-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="simple-form-uischema.json" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_12pkbxb</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xzn0re</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:scriptTask id="Activity_0qpzdpu" name="Create Type Ahead Data Store">
+      <bpmn:extensionElements>
+        <spiffworkflow:instructionsForEndUser />
+        <spiffworkflow:unitTests>
+          <spiffworkflow:unitTest id="check_colors">
+            <spiffworkflow:inputJson>{}</spiffworkflow:inputJson>
+            <spiffworkflow:expectedOutputJson>{}</spiffworkflow:expectedOutputJson>
+          </spiffworkflow:unitTest>
+        </spiffworkflow:unitTests>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_17db3yp</bpmn:incoming>
+      <bpmn:outgoing>Flow_12pkbxb</bpmn:outgoing>
+      <bpmn:dataOutputAssociation id="DataOutputAssociation_0epmbiz">
+        <bpmn:targetRef>DataStoreReference_0lhy0b6</bpmn:targetRef>
+      </bpmn:dataOutputAssociation>
+      <bpmn:script>
+# Often you will call some external serice to load data
+# for this example, we'll create it by hand, but imagine
+# combining this with a service call to an external database
+# and you start the get the idea of how this can be a powerful
+# tool.
+
+
+color_list = ["Red","Blue","Green","Yellow","Black","White","Purple","Orange","Pink","Brown","Gray","Cyan",
+"Magenta","Olive","Maroon","Navy","Beige","Lavender","Gold","Teal","Silver","Indigo","Crimson","Coral",
+"Amber","Ivory","Emerald","Jade","Ruby","Sapphire","Charcoal","Rose","Fuchsia","Aqua","Turquoise","Mint",
+"Peach","Sand","Ochre","Periwinkle","Blush","Lime","Chartreuse","Scarlet","Cerulean","Topaz","Burgundy",
+"Plum","Seafoam","Wisteria","Taupe","Rust","Apricot","Honey","Azure","Cobalt","Tangerine","Mauve","Lilac",
+"Orchid","Denim","Forest","Sky","Canary","Amethyst","Blizzard","Pumpkin","Clover","Eggshell","Sienna",
+"Cinnamon","Mulberry","Raspberry","Moss","Dandelion","Midnight","Lemon","Steel","Peacock","Brick",
+"Cappuccino","Custard","Teak","Mustard","Flamingo","Garnet","Snow","Vanilla","Cashmere","Pine","Driftwood",
+"Slate","Ash","Clay","Fog","Glacier","Mocha","Sage","Espresso","Ice"]
+
+
+# The type-ahead data structure we need to have is one with text we want to use for the basis of the typeahead
+# and a json result that we be used to populate the variable for what is selected. In this way
+# your data store can contain metadata about each item, and you can control exactly what data is used for
+# the type ahead search.
+colors = [{"search_term": c, "result": {"name":c}} for c in color_list] 
+
+# We will save these colors to a "magic" variable called 'typeahead'.  Recent updates to our 
+# permission system make this data store inaccessible.  We'll fix that in the next release.
+# for now, you must manually add it to the XML as follows:
+# 1. Add this line above the bpmn:process near the top of the xml
+#      &lt;bpmn:dataStore id="typeahead" name="TypeaheadDataStore" /&gt;
+# 2. Update the data store reference to point to this new data object by adding this attribute: dataStoreRef="typeahead"
+#     &lt;bpmn:dataStoreReference  ...snip... dataStoreRef="typeahead" /&gt;
+
+
+typeahead = {"colors": colors}
+
+del(colors)
+del(color_list)</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:dataStoreReference id="DataStoreReference_0lhy0b6" name="Update &#10;Typeahead Data Store" dataStoreRef="typeahead" />
+    <bpmn:textAnnotation id="TextAnnotation_0yeq9d1">
+      <bpmn:text>In a real world case, you would create the data store in a separate process from where it is used.  Once created, the Data Store be accessed by other process models (in the same group or a child group)</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0n0dq77" associationDirection="None" sourceRef="Activity_0qpzdpu" targetRef="TextAnnotation_0yeq9d1" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_type_aheads_buun2rn">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_14za570_di" bpmnElement="EndEvent_1">
+        <dc:Bounds x="652" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1w6qao6_di" bpmnElement="Activity_1sp5y3x">
+        <dc:Bounds x="450" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_16uqntw_di" bpmnElement="Activity_0qpzdpu">
+        <dc:Bounds x="270" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="DataStoreReference_0lhy0b6_di" bpmnElement="DataStoreReference_0lhy0b6">
+        <dc:Bounds x="295" y="275" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="278" y="332" width="85" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0yeq9d1_di" bpmnElement="TextAnnotation_0yeq9d1">
+        <dc:Bounds x="350" y="-30" width="266" height="100" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_17db3yp_di" bpmnElement="Flow_17db3yp">
+        <di:waypoint x="215" y="177" />
+        <di:waypoint x="270" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12pkbxb_di" bpmnElement="Flow_12pkbxb">
+        <di:waypoint x="370" y="177" />
+        <di:waypoint x="450" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xzn0re_di" bpmnElement="Flow_1xzn0re">
+        <di:waypoint x="550" y="177" />
+        <di:waypoint x="652" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="DataOutputAssociation_0epmbiz_di" bpmnElement="DataOutputAssociation_0epmbiz">
+        <di:waypoint x="318" y="217" />
+        <di:waypoint x="316" y="275" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0n0dq77_di" bpmnElement="Association_0n0dq77">
+        <di:waypoint x="337" y="137" />
+        <di:waypoint x="366" y="70" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

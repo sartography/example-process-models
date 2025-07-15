@@ -1,0 +1,10 @@
+{
+  "ui:theme": "mui",
+  "ui:order": [
+    "size",
+    "toppings"
+  ],
+  "toppings": {
+    "ui:widget": "checkboxes"
+  }
+}

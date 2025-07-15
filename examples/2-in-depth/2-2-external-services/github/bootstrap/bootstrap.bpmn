@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_96f6665" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.0.0-dev">
+  <bpmn:process id="Process_bootstrap_y6f7g51" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_17db3yp</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_17db3yp" sourceRef="StartEvent_1" targetRef="Activity_0q56g2s" />
+    <bpmn:endEvent id="EndEvent_1">
+      <bpmn:incoming>Flow_18myx5m</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0kxcrvj" sourceRef="Activity_0q56g2s" targetRef="Activity_192vnzj" />
+    <bpmn:scriptTask id="Activity_0q56g2s">
+      <bpmn:incoming>Flow_17db3yp</bpmn:incoming>
+      <bpmn:outgoing>Flow_0kxcrvj</bpmn:outgoing>
+      <bpmn:script>process_id = "94310d1f-6e93-4f50-9c3d-31af5f5bbe96"
+
+git_header = {"accept": "application/vnd.github+json", "Authorization": "Bearer FIXME"}
+OWNER = "sartography"
+REPO = "sartography-process-models"
+PATH = "integrations/github/rest-api"
+
+git_param = {"recursive": 1}
+
+git_trees_url = "https://api.github.com/repos/" + OWNER + "/" + REPO + "/git/trees/main"
+
+isMI = False</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:serviceTask id="Activity_192vnzj" name="Get File Tree">
+      <bpmn:extensionElements>
+        <spiffworkflow:serviceTaskOperator id="http/GetRequestV2" resultVariable="resp_git_tree">
+          <spiffworkflow:parameters>
+            <spiffworkflow:parameter id="url" type="str" value="git_trees_url" />
+            <spiffworkflow:parameter id="headers" type="any" value="git_header" />
+            <spiffworkflow:parameter id="params" type="any" value="git_param" />
+            <spiffworkflow:parameter id="basic_auth_username" type="str" />
+            <spiffworkflow:parameter id="basic_auth_password" type="str" />
+            <spiffworkflow:parameter id="attempts" type="int" />
+          </spiffworkflow:parameters>
+        </spiffworkflow:serviceTaskOperator>
+        <spiffworkflow:postScript>file_list = []
+search_path = "integrations/github/rest-api"
+for i in resp_git_tree["body"]["tree"]:
+    if search_path in i["path"]:
+        if i["type"] == "blob":
+            file_dic = {}
+            file_dic["content_url"] = i["url"]
+            last_slash = i["path"].rfind("/")
+            fn_end = len(i["path"])
+            file_dic["path"] = i["path"][0:last_slash+1]
+            file_dic["name"] = i["path"][last_slash+1:fn_end]
+            file_list.append(file_dic)
+
+if not(isMI):
+    file_content_list = []
+    file_list_cnt = 0
+    file_list_len = len(file_list)
+del(resp_git_tree)
+del(file_dic)
+del(i)</spiffworkflow:postScript>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0kxcrvj</bpmn:incoming>
+      <bpmn:outgoing>Flow_0z04e5h</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_017mvq0">
+      <bpmn:incoming>Flow_1mgif1v</bpmn:incoming>
+      <bpmn:incoming>Flow_1aajlfp</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xa59ls</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0xa59ls" sourceRef="Gateway_017mvq0" targetRef="Activity_0sgkyip" />
+    <bpmn:sequenceFlow id="Flow_0shvvv4" sourceRef="Activity_0sgkyip" targetRef="Gateway_134aglg" />
+    <bpmn:serviceTask id="Activity_0sgkyip">
+      <bpmn:extensionElements>
+        <spiffworkflow:preScript>git_contents_url = file_list[file_list_cnt]["content_url"]</spiffworkflow:preScript>
+        <spiffworkflow:serviceTaskOperator id="http/GetRequestV2" resultVariable="resp_git_content">
+          <spiffworkflow:parameters>
+            <spiffworkflow:parameter id="url" type="str" value="git_contents_url" />
+            <spiffworkflow:parameter id="headers" type="any" value="git_header" />
+            <spiffworkflow:parameter id="params" type="any" />
+            <spiffworkflow:parameter id="basic_auth_username" type="str" />
+            <spiffworkflow:parameter id="basic_auth_password" type="str" />
+            <spiffworkflow:parameter id="attempts" type="int" />
+          </spiffworkflow:parameters>
+        </spiffworkflow:serviceTaskOperator>
+        <spiffworkflow:postScript>file_list[file_list_cnt]["file_content"] =  resp_git_content["body"]["content"]
+file_list[file_list_cnt]["encoding"] =  resp_git_content["body"]["encoding"]
+# file_content_list.append(resp_git_content)
+file_list_cnt = file_list_cnt + 1
+del(git_contents_url)
+del(resp_git_content)</spiffworkflow:postScript>
+        <spiffworkflow:instructionsForEndUser>Retrievie file content for</spiffworkflow:instructionsForEndUser>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0xa59ls</bpmn:incoming>
+      <bpmn:outgoing>Flow_0shvvv4</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_134aglg" name="file_list_cnt &#60; file_list_len" default="Flow_18myx5m">
+      <bpmn:incoming>Flow_0shvvv4</bpmn:incoming>
+      <bpmn:outgoing>Flow_18myx5m</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1mgif1v</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_18myx5m" name="No" sourceRef="Gateway_134aglg" targetRef="EndEvent_1" />
+    <bpmn:sequenceFlow id="Flow_1mgif1v" name="Yes" sourceRef="Gateway_134aglg" targetRef="Gateway_017mvq0">
+      <bpmn:conditionExpression>file_list_cnt &lt; file_list_len</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:endEvent id="Event_1yb79d1">
+      <bpmn:incoming>Flow_0xe9y86</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0ri9vl3" name="Yes" sourceRef="Gateway_1ecso5m" targetRef="Activity_1h0ats0">
+      <bpmn:conditionExpression>isMI</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_1h0ats0">
+      <bpmn:extensionElements>
+        <spiffworkflow:serviceTaskOperator id="http/GetRequestV2" resultVariable="resp_git_content">
+          <spiffworkflow:parameters>
+            <spiffworkflow:parameter id="url" type="str" value="git_contents_url" />
+            <spiffworkflow:parameter id="headers" type="any" value="git_header" />
+            <spiffworkflow:parameter id="params" type="any" />
+            <spiffworkflow:parameter id="basic_auth_username" type="str" />
+            <spiffworkflow:parameter id="basic_auth_password" type="str" />
+            <spiffworkflow:parameter id="attempts" type="int" />
+          </spiffworkflow:parameters>
+        </spiffworkflow:serviceTaskOperator>
+        <spiffworkflow:preScript>git_contents_url = file["content_url"]</spiffworkflow:preScript>
+        <spiffworkflow:instructionsForEndUser>{{ git_contents_url }}</spiffworkflow:instructionsForEndUser>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ri9vl3</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xe9y86</bpmn:outgoing>
+      <bpmn:multiInstanceLoopCharacteristics isSequential="true" spiffworkflow:scriptsOnInstances="true">
+        <bpmn:loopDataInputRef>file_list</bpmn:loopDataInputRef>
+        <bpmn:loopDataOutputRef>file_content</bpmn:loopDataOutputRef>
+        <bpmn:inputDataItem id="file" name="file" />
+        <bpmn:outputDataItem id="content" name="content" />
+      </bpmn:multiInstanceLoopCharacteristics>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0xe9y86" sourceRef="Activity_1h0ats0" targetRef="Event_1yb79d1" />
+    <bpmn:exclusiveGateway id="Gateway_1ecso5m" name="isMI" default="Flow_1aajlfp">
+      <bpmn:incoming>Flow_0z04e5h</bpmn:incoming>
+      <bpmn:outgoing>Flow_1aajlfp</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0ri9vl3</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0z04e5h" sourceRef="Activity_192vnzj" targetRef="Gateway_1ecso5m" />
+    <bpmn:sequenceFlow id="Flow_1aajlfp" name="No" sourceRef="Gateway_1ecso5m" targetRef="Gateway_017mvq0" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_bootstrap_y6f7g51">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="179" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_14za570_di" bpmnElement="EndEvent_1">
+        <dc:Bounds x="1202" y="159" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_14kixlt_di" bpmnElement="Activity_0q56g2s">
+        <dc:Bounds x="270" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1p3zt2x_di" bpmnElement="Activity_192vnzj">
+        <dc:Bounds x="440" y="137" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_017mvq0_di" bpmnElement="Gateway_017mvq0" isMarkerVisible="true">
+        <dc:Bounds x="765" y="152" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0oe6ivd_di" bpmnElement="Activity_0sgkyip">
+        <dc:Bounds x="890" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_134aglg_di" bpmnElement="Gateway_134aglg" isMarkerVisible="true">
+        <dc:Bounds x="1065" y="152" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1058" y="209" width="64" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1yb79d1_di" bpmnElement="Event_1yb79d1">
+        <dc:Bounds x="922" y="292" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ydu614_di" bpmnElement="Activity_1h0ats0">
+        <dc:Bounds x="740" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1ecso5m_di" bpmnElement="Gateway_1ecso5m" isMarkerVisible="true">
+        <dc:Bounds x="615" y="152" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="629" y="128" width="21" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_17db3yp_di" bpmnElement="Flow_17db3yp">
+        <di:waypoint x="215" y="177" />
+        <di:waypoint x="270" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0kxcrvj_di" bpmnElement="Flow_0kxcrvj">
+        <di:waypoint x="370" y="177" />
+        <di:waypoint x="440" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xa59ls_di" bpmnElement="Flow_0xa59ls">
+        <di:waypoint x="815" y="177" />
+        <di:waypoint x="890" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0shvvv4_di" bpmnElement="Flow_0shvvv4">
+        <di:waypoint x="990" y="177" />
+        <di:waypoint x="1065" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18myx5m_di" bpmnElement="Flow_18myx5m">
+        <di:waypoint x="1115" y="177" />
+        <di:waypoint x="1202" y="177" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1151" y="159" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mgif1v_di" bpmnElement="Flow_1mgif1v">
+        <di:waypoint x="1090" y="152" />
+        <di:waypoint x="1090" y="90" />
+        <di:waypoint x="790" y="90" />
+        <di:waypoint x="790" y="152" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="931" y="72" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ri9vl3_di" bpmnElement="Flow_0ri9vl3">
+        <di:waypoint x="640" y="202" />
+        <di:waypoint x="640" y="310" />
+        <di:waypoint x="740" y="310" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="646" y="253" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xe9y86_di" bpmnElement="Flow_0xe9y86">
+        <di:waypoint x="840" y="310" />
+        <di:waypoint x="922" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0z04e5h_di" bpmnElement="Flow_0z04e5h">
+        <di:waypoint x="540" y="177" />
+        <di:waypoint x="615" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1aajlfp_di" bpmnElement="Flow_1aajlfp">
+        <di:waypoint x="665" y="177" />
+        <di:waypoint x="765" y="177" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="708" y="159" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

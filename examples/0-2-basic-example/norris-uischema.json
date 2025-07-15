@@ -1,0 +1,21 @@
+{
+  "ui:theme": "mui",
+  "pushups": {
+    "ui:widget": "radio",
+    "ui:options": {
+      "inline": true
+    }
+  },
+  "thanos": {
+    "ui:widget": "radio",
+    "ui:options": {
+      "inline": true
+    }
+  },
+  "bulletproof": {
+    "ui:widget": "radio",
+    "ui:options": {
+      "inline": true
+    }
+  }
+}

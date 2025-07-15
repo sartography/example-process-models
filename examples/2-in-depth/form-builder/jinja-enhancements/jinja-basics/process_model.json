@@ -1,0 +1,9 @@
+{
+    "description": "Example of using Jinja to set react-jsonschema-form parameters in the User Task Form Builder",
+    "display_name": "Jinja Basics",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "jinja-basics.bpmn",
+    "primary_process_id": "Process_jinja_basics_42r8tvo"
+}

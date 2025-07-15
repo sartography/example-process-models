@@ -1,0 +1,9 @@
+{
+    "description": "Examples of different approaches to handling Service Task errors.",
+    "display_name": "Service Task Error Strategies - WIP",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "service-task-error-strategies.bpmn",
+    "primary_process_id": "Service_Task_Error_Strategies"
+}

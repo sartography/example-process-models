@@ -1,0 +1,8 @@
+{
+    "correlation_keys": null,
+    "correlation_properties": null,
+    "data_store_specifications": {},
+    "description": "Examples of how we extended the react-jsonschema-form based Form Builder found in the User Task with Jinja features.",
+    "display_name": "Jinja Enhancements",
+    "messages": null
+}

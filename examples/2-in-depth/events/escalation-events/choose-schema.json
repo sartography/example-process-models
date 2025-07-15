@@ -1,0 +1,18 @@
+{
+  "title": "Dropdown list",
+  "description": "",
+  "type": "object",
+  "required": ["path"],
+  "properties": {
+    "path": {
+      "title": "Select a Path",
+      "type": "string",
+      "enum": [
+        "Path A",
+        "Path B",
+        "Path C",
+        "Path D"
+      ]
+    }
+  }
+}

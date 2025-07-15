@@ -1,0 +1,46 @@
+ {
+  "first_name": "SD",
+  "is_joke": false,
+  "colors": [
+    {
+      "value": "#ffb6c1",
+      "label": "Tickle Me Pink"
+    },
+    {
+      "value": "#c2dfff",
+      "label": "Forget-Me-Not Blue"
+    },
+    {
+      "value": "#f49ac1",
+      "label": "Salmon Surprise"
+    },
+    {
+      "value": "#90ee90",
+      "label": "Guacamole Green"
+    },
+    {
+      "value": "#ffd700",
+      "label": "Banana Mania"
+    },
+    {
+      "value": "#d3d3d3",
+      "label": "Indecisive Gray"
+    },
+    {
+      "value": "#cd5b45",
+      "label": "Fiery Fuchsia"
+    },
+    {
+      "value": "#ffa500",
+      "label": "Orange You Glad"
+    },
+    {
+      "value": "#a020f0",
+      "label": "Deep Sea Purple"
+    },
+    {
+      "value": "#800080",
+      "label": "Eggplant Envy"
+    }
+  ]
+}

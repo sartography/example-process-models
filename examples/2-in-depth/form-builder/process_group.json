@@ -1,0 +1,8 @@
+{
+    "correlation_keys": null,
+    "correlation_properties": null,
+    "data_store_specifications": {},
+    "description": "Examples of how to use the basic react-jsonschema-form based Form Builder available in the User Task and SpiffWorkflow enhancements.",
+    "display_name": "Form Builder",
+    "messages": null
+}

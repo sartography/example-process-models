@@ -1,0 +1,9 @@
+{
+    "description": "\nReturns a list of all US Federal holidays names and dates within a specified date range.",
+    "display_name": "Holidays",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "holidays.bpmn",
+    "primary_process_id": "Return_Holidays"
+}

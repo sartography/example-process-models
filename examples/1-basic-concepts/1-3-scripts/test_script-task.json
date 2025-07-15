@@ -1,0 +1,98 @@
+{
+    "test_case_for_process_instance_6468": {
+        "expected_output_json": {
+            "flag_stars": 12,
+            "i": 999999,
+            "longest_river": "Nile",
+            "num_correct": 3,
+            "pi": 3.1415916535897743,
+            "s": 3.1415916535897743,
+            "score": 100,
+            "woman_nobel": "marie curie"
+        },
+        "tasks": {
+            "Process_bd2e724:Activity_04csdr0": {
+                "data": [
+                    {
+                        "flag_stars": 12,
+                        "longest_river": "Nile",
+                        "woman_nobel": "marie curie"
+                    }
+                ]
+            },
+            "Process_bd2e724:Activity_1p3gjo2": {
+                "data": [
+                    {
+                        "i": 999999,
+                        "pi": 3.1415916535897743,
+                        "s": 3.1415916535897743
+                    }
+                ]
+            }
+        }
+    },
+    "test_case_for_process_instance_6469": {
+        "expected_output_json": {
+            "flag_stars": 4,
+            "i": 999999,
+            "longest_river": "Arnold",
+            "num_correct": 0,
+            "pi": 3.1415916535897743,
+            "s": 3.1415916535897743,
+            "score": 0,
+            "woman_nobel": "Cathy"
+        },
+        "tasks": {
+            "Process_bd2e724:Activity_04csdr0": {
+                "data": [
+                    {
+                        "flag_stars": 4,
+                        "longest_river": "Arnold",
+                        "woman_nobel": "Cathy"
+                    }
+                ]
+            },
+            "Process_bd2e724:Activity_1p3gjo2": {
+                "data": [
+                    {
+                        "i": 999999,
+                        "pi": 3.1415916535897743,
+                        "s": 3.1415916535897743
+                    }
+                ]
+            }
+        }
+    },
+    "test_case_for_process_instance_6470": {
+        "expected_output_json": {
+            "flag_stars": 12,
+            "i": 999999,
+            "longest_river": "Nile",
+            "num_correct": 2,
+            "pi": 3.1415916535897743,
+            "s": 3.1415916535897743,
+            "score": 66,
+            "woman_nobel": "James"
+        },
+        "tasks": {
+            "Process_bd2e724:Activity_04csdr0": {
+                "data": [
+                    {
+                        "flag_stars": 12,
+                        "longest_river": "Nile",
+                        "woman_nobel": "James"
+                    }
+                ]
+            },
+            "Process_bd2e724:Activity_1p3gjo2": {
+                "data": [
+                    {
+                        "i": 999999,
+                        "pi": 3.1415916535897743,
+                        "s": 3.1415916535897743
+                    }
+                ]
+            }
+        }
+    }
+}

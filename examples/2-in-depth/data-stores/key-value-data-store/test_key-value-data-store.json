@@ -1,0 +1,34 @@
+{
+    "test_case_for_process_instance_6485": {
+        "expected_output_json": {
+            "django": [
+                {
+                    "actor": "Jamie Foxx",
+                    "description": "Freed slave turned bounty hunter",
+                    "name": "Django Freeman"
+                },
+                {
+                    "actor": "Christoph Waltz",
+                    "description": "Bounty hunter who frees Django",
+                    "name": "Dr. King Schultz"
+                },
+                {
+                    "actor": "Leonardo DiCaprio",
+                    "description": "Cruel and brutal plantation owner",
+                    "name": "Calvin Candie"
+                },
+                {
+                    "actor": "Samuel L. Jackson",
+                    "description": "Candie's trusted house slave",
+                    "name": "Stephen"
+                },
+                {
+                    "actor": "Kerry Washington",
+                    "description": "German woman enslaved by Candie",
+                    "name": "Broomhilda von Schaft"
+                }
+            ]
+        },
+        "tasks": {}
+    }
+}

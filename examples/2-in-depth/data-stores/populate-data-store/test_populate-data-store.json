@@ -1,0 +1,15 @@
+{
+    "test_case_for_process_instance_6486": {
+        "expected_output_json": {
+            "my_regular_variable_1": true,
+            "my_regular_variable_2": true
+        },
+        "tasks": {
+            "Process_populate_data_store_9nyy6hu:Activity_02wo1je": {
+                "data": [
+                    {}
+                ]
+            }
+        }
+    }
+}

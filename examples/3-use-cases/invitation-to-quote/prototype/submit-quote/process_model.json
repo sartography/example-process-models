@@ -1,0 +1,9 @@
+{
+    "description": "The providers should submit their company name and quote amount.",
+    "display_name": "Submit Quote",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "submit-quote.bpmn",
+    "primary_process_id": "submit_quote_prototype"
+}

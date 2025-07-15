@@ -1,0 +1,12 @@
+{
+  "title": "Text Field",
+  "description": "A simple text field that is required, has a default value, sets a placeholder, includes a description. (field name will be 'firstname')",
+  "type": "object",
+  "properties": {
+    "task_b_data": {
+      "type": "string",
+      "title": "Task b data",
+      "default": "b hotness"
+    }
+  }
+}

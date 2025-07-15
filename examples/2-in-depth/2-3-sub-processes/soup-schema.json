@@ -1,0 +1,27 @@
+{
+  "title": "Soup",
+  "description": "Please select your choice of Soup",
+  "properties": {
+    "chicken_noodle_soup": {
+      "type": "boolean",
+      "title": "Chicken Noodle Soup",
+      "default": false
+    },
+    "french_onion_soup": {
+      "type": "boolean",
+      "title": "French Onion Soup",
+      "default": false
+    },
+    "roasted_pumpkin_soup": {
+      "type": "boolean",
+      "title": "Roasted Pumpkin Soup",
+      "default": false
+    },
+    "tom_yum_soup": {
+      "type": "boolean",
+      "title": "Tom Yum Soup",
+      "default": false
+    }
+  },
+  "required": []
+}

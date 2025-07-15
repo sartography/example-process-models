@@ -1,0 +1,92 @@
+{
+    "test_case_for_process_instance_6472": {
+        "expected_output_json": {
+            "activites": "Wild Life",
+            "approved": "approved",
+            "explanation": "Interesting Activity",
+            "lane_owners": {
+                "Vacation Approver": [
+                    "dinithi@sartography.com"
+                ]
+            },
+            "location": "Jamaica",
+            "requested_by": "dinithi@sartography.com",
+            "season": "Summer"
+        },
+        "tasks": {
+            "Process_9wllce2:Activity_041y60h": {
+                "data": [
+                    {
+                        "approved": "approved",
+                        "explanation": "Interesting Activity",
+                        "lane_owners": {
+                            "Vacation Approver": [
+                                "dinithi@sartography.com"
+                            ]
+                        },
+                        "requested_by": "dinithi@sartography.com"
+                    }
+                ]
+            },
+            "Process_9wllce2:Activity_0cya923": {
+                "data": [
+                    {}
+                ]
+            },
+            "Process_9wllce2:Activity_121gfc7": {
+                "data": [
+                    {
+                        "activites": "Wild Life",
+                        "location": "Jamaica",
+                        "season": "Summer"
+                    }
+                ]
+            }
+        }
+    },
+    "test_case_for_process_instance_6473": {
+        "expected_output_json": {
+            "activites": "Skiing",
+            "approved": "rejected",
+            "explanation": "Florida is not a great area for skiing",
+            "lane_owners": {
+                "Vacation Approver": [
+                    "dinithi@sartography.com"
+                ]
+            },
+            "location": "Florida",
+            "requested_by": "dinithi@sartography.com",
+            "season": "Winter"
+        },
+        "tasks": {
+            "Process_9wllce2:Activity_041y60h": {
+                "data": [
+                    {
+                        "approved": "rejected",
+                        "explanation": "Florida is not a great area for skiing",
+                        "lane_owners": {
+                            "Vacation Approver": [
+                                "dinithi@sartography.com"
+                            ]
+                        },
+                        "requested_by": "dinithi@sartography.com"
+                    }
+                ]
+            },
+            "Process_9wllce2:Activity_0cya923": {
+                "data": [
+                    {}
+                ]
+            },
+            "Process_9wllce2:Activity_121gfc7": {
+                "data": [
+                    {
+                        "activites": "Skiing",
+                        "location": "Florida",
+                        "season": "Winter"
+                    }
+                ]
+            }
+        }
+    }
+}

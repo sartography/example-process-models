@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "properties": {
+    "initial_prompt": {
+      "title": "Question",
+      "type": "string",
+      "description": "Enter a question below.  For the best results, ask a question that would require both web research and simple mathmatic operations.  A good default is provided. ",
+      "default": "Find the current temperature in Paris, France and the temperature in New York City.  What is the difference between these two temperatures?  What city is currently hotter?"
+    }
+  },
+  "required": ["initial_prompt"]
+}

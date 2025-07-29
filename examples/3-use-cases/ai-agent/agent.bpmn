@@ -1,0 +1,622 @@
+<?xml version="1.0" ?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.20.0">
+  <bpmn:process id="Process_agent_demo_lmtgcz3" name="Compare Temperatures AI Agent" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_Initial" name="Start Comparison">
+      <bpmn:outgoing>Flow_To_Initialize</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:scriptTask id="ScriptTask_Initialize" name="Initialize Variables" scriptFormat="python">
+      <bpmn:incoming>Flow_1tvu2i0</bpmn:incoming>
+      <bpmn:outgoing>Flow_To_CallLLM</bpmn:outgoing>
+      <bpmn:script><![CDATA[initial_prompt = initial_prompt + " Request just one function/tool at a time."
+messages = [{
+  "role": "user", 
+  "content": initial_prompt
+}]
+iteration_count = 0
+tool_info = None
+del initial_prompt]]></bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:scriptTask id="ScriptTask_ProcessLLMResponse" name="Process LLM Response" scriptFormat="python">
+      <bpmn:extensionElements>
+        <spiffworkflow:instructionsForEndUser>Deciding next step based on LLM output (Iteration {{ iteration_count }}). LLM provided {{ current_llm_response_parts }} part(s) to process.</spiffworkflow:instructionsForEndUser>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1tiumz9</bpmn:incoming>
+      <bpmn:outgoing>Flow_To_DecisionGateway</bpmn:outgoing>
+      <bpmn:script><![CDATA[try:
+    _ = llm_final_answer
+except NameError:
+    llm_final_answer = ""
+
+tool_info = None
+
+if iteration_count > 10 and not llm_final_answer:
+    llm_final_answer = "Exceeded maximum iterations."
+
+if not llm_final_answer:
+    processed_parts = current_llm_response_parts
+    llm_final_answer = ""
+
+    current_conversation = messages
+    if llm_response_message:
+        current_conversation.append(llm_response_message)
+    messages = current_conversation
+
+    if processed_parts:
+        function_call_part = None
+        for part in processed_parts:
+            if "functionCall" in part:
+                function_call_part = part
+                break
+
+        if function_call_part:
+            fc = function_call_part["functionCall"]
+            tool_name = fc["name"]
+            tool_args = fc["args"]
+            tool_call_id = function_call_part.get("tool_call_id")
+
+            if tool_name in [t['name'] for t in tools_definition]:
+                tool_info = {
+                    "name": tool_name,
+                    "id": tool_call_id,
+                    "args": tool_args
+                }
+            else: # pragma: no cover
+                llm_final_answer = f"LLM requested unknown tool: {tool_name}"
+
+        else:
+            text_parts = [part["text"] for part in processed_parts if "text" in part]
+            llm_final_answer = " ".join(text_parts)
+    else:
+        if not llm_final_answer: 
+             llm_final_answer = "LLM returned no parts in response."
+
+try: del processed_parts
+except NameError: pass
+try: del current_conversation
+except NameError: pass
+try: del llm_response_message
+except NameError: pass
+try: del function_call_part
+except NameError: pass
+try: del part
+except NameError: pass
+try: del fc
+except NameError: pass
+try: del tool_name
+except NameError: pass
+try: del tool_args
+except NameError: pass
+try: del tool_call_id
+except NameError: pass
+try: del text_parts
+except NameError: pass
+try: del current_llm_response_parts
+except NameError: pass
+try: del tools_definition
+except NameError: pass
+]]></bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:exclusiveGateway id="Gateway_Decision" name="Tool or Finish?">
+      <bpmn:incoming>Flow_To_DecisionGateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_To_DoCalculation</bpmn:outgoing>
+      <bpmn:outgoing>Flow_To_End</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0uhgh10</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1ov0obn</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:scriptTask id="ScriptTask_DoCalculation" name="Do Calculation" scriptFormat="python">
+      <bpmn:incoming>Flow_To_DoCalculation</bpmn:incoming>
+      <bpmn:outgoing>Flow_11bv5u3</bpmn:outgoing>
+      <bpmn:script><![CDATA[result_value = None
+error_msg = None
+tool_args = tool_info.get("args", {})
+
+try:
+    num1 = float(tool_args.get("number_1"))
+    num2 = float(tool_args.get("number_2"))
+    operation = tool_args.get("operation")
+    if operation == "add":
+        result_value = num1 + num2
+    elif operation == "subtract":
+        result_value = num1 - num2
+    elif operation == "multiply":
+        result_value = num1 * num2
+    elif operation == "divide":
+        if num2 == 0: # pragma: no cover
+            error_msg = "Error: Division by zero"
+        else:
+            result_value = num1 / num2
+    else: # pragma: no cover
+        error_msg = f"Error: Invalid operation '{operation}'"
+except Exception as e: # pragma: no cover
+    error_msg = f"Error during calculation: {str(e)}"
+
+if error_msg:
+    tool_result_content = error_msg
+else:
+    tool_result_content = result_value
+
+tool_info['result'] = tool_result_content
+
+tool_response_message = {
+    "role": "tool",
+    "tool_call_id": tool_info['id'],
+    "content": str(tool_result_content)
+}
+messages.append(tool_response_message)
+
+del tool_info
+
+try: del result_value
+except NameError: pass
+try: del error_msg
+except NameError: pass
+try: del tool_args
+except NameError: pass
+try: del num1
+except NameError: pass
+try: del num2
+except NameError: pass
+try: del operation
+except NameError: pass
+try: del e
+except NameError: pass
+try: del tool_result_content
+except NameError: pass
+try: del tool_response_message
+except NameError: pass
+]]></bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:endEvent id="EndEvent_Finished" name="Comparison Finished">
+      <bpmn:extensionElements>
+        <spiffworkflow:instructionsForEndUser>Final Answer from LLM:
+{{ llm_final_answer | default(&quot;No final answer provided.&quot;) }}</spiffworkflow:instructionsForEndUser>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0djbuol</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_To_Initialize" sourceRef="StartEvent_Initial" targetRef="Activity_0ethlni"/>
+    <bpmn:sequenceFlow id="Flow_To_CallLLM" sourceRef="ScriptTask_Initialize" targetRef="Activity_0q9icr0"/>
+    <bpmn:sequenceFlow id="Flow_To_DecisionGateway" sourceRef="ScriptTask_ProcessLLMResponse" targetRef="Gateway_Decision"/>
+    <bpmn:sequenceFlow id="Flow_To_DoCalculation" name="Calc tool" sourceRef="Gateway_Decision" targetRef="ScriptTask_DoCalculation">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">tool_info and tool_info['name'] == "do_calculation" and iteration_count &lt;= 10</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_To_End" name="Finished or Max Iterations" sourceRef="Gateway_Decision" targetRef="Activity_1o23xid">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">not tool_info or iteration_count &gt; 10</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1tvu2i0" sourceRef="Activity_0848a7s" targetRef="ScriptTask_Initialize"/>
+    <bpmn:scriptTask id="Activity_0848a7s" name="Add Your API Keys Here!">
+      <bpmn:incoming>Flow_0gbwgva</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tvu2i0</bpmn:outgoing>
+      <bpmn:script><![CDATA[llm_api_key = ""
+tavily_api_key = ""
+llm_model = "gemini/gemini-2.5-flash"]]></bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:serviceTask id="Activity_0q9icr0" name="Call LLM">
+      <bpmn:extensionElements>
+        <spiffworkflow:serviceTaskOperator id="ai/LlmRequest" resultVariable="llm_service_response">
+          <spiffworkflow:parameters>
+            <spiffworkflow:parameter id="model" type="str" value="llm_model"/>
+            <spiffworkflow:parameter id="messages" type="any" value="messages"/>
+            <spiffworkflow:parameter id="tools" type="any" value="tools_definition"/>
+            <spiffworkflow:parameter id="api_key" type="str" value="llm_api_key"/>
+          </spiffworkflow:parameters>
+        </spiffworkflow:serviceTaskOperator>
+        <spiffworkflow:preScript><![CDATA[iteration_count = iteration_count + 1
+
+tools_definition = [
+    {
+        "name": "web_search",
+        "description": "Search the web for a given query to find information like lat/long for a place name, current events, facts, etc.",
+        "parameters": { "type": "object", "properties": { "search_query": { "type": "string", "description": "The query to search the web for."}}, "required": ["search_query"]},
+    },
+    {
+        "name": "do_calculation",
+        "description": "Perform a mathematical calculation (add, subtract, multiply, divide) on two numbers. Returns the result of the calculation.",
+        "parameters": { "type": "object", "properties": { "number_1": { "type": "number", "description": "The first number."}, "number_2": { "type": "number", "description": "The second number."}, "operation": { "type": "string", "description": "The operation: add, subtract, multiply, divide.", "enum": ["add", "subtract", "multiply", "divide"]}}, "required": ["number_1", "number_2", "operation"]},
+
+    },
+    {
+        "name": "get_temperature",
+        "description": "Get the current temperature in Celcius for a given latitude and longitude.",
+        "parameters": { "type": "object", "properties": { "latitude": { "type": "number", "description": "The latitude."}, "longitude": { "type": "number", "description": "The longitude."}}, "required": ["latitude", "longitude"]},
+    },
+]
+]]></spiffworkflow:preScript>
+        <spiffworkflow:postScript><![CDATA[if iteration_count > 10 and not llm_final_answer:
+    llm_final_answer = "Exceeded maximum iterations during LLM call."
+    current_llm_response_parts = []
+elif llm_service_response and llm_service_response["http_status"] == 200:
+    response_data = llm_service_response['body']
+
+    message = response_data.get("choices", [{}])[0].get("message", {})
+    llm_response_message = message
+
+    parts = []
+    if message.get("tool_calls"):
+        for tc in message.get("tool_calls"):
+            try:
+                args = json.loads(tc["function"]["arguments"])
+            except:
+                args = {}
+            parts.append({
+                "functionCall": {
+                    "name": tc["function"]["name"],
+                    "args": args
+                },
+                "tool_call_id": tc["id"]
+            })
+    elif message.get("content"):
+        parts.append({"text": message.get("content")})
+    current_llm_response_parts = parts
+else:
+    error_body_str = ""
+    if llm_service_response and hasattr(llm_service_response, 'body'):
+        try:
+            error_body_str = json.dumps(llm_service_response['body'])
+        except: # pragma: no cover
+            error_body_str = str(llm_service_response['body'])
+    elif llm_service_response and hasattr(llm_service_response, 'text'): # pragma: no cover
+         error_body_str = llm_service_response.text
+    
+    status_code_str = str(llm_service_response["http_status"] if llm_service_response else 'N/A')
+    
+    llm_final_answer = f"Error calling LLM: {status_code_str} - {error_body_str}"
+    current_llm_response_parts = []
+
+del llm_service_response
+try: del response_data
+except NameError: pass
+try: del message
+except NameError: pass
+try: del parts
+except NameError: pass
+try: del tc
+except NameError: pass
+try: del args
+except NameError: pass
+try: del error_body_str
+except NameError: pass
+try: del status_code_str
+except NameError: pass]]></spiffworkflow:postScript>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_To_CallLLM</bpmn:incoming>
+      <bpmn:incoming>Flow_11bv5u3</bpmn:incoming>
+      <bpmn:incoming>Flow_1v0u5gk</bpmn:incoming>
+      <bpmn:incoming>Flow_0p6zp6u</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tiumz9</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_1tiumz9" sourceRef="Activity_0q9icr0" targetRef="ScriptTask_ProcessLLMResponse"/>
+    <bpmn:sequenceFlow id="Flow_11bv5u3" sourceRef="ScriptTask_DoCalculation" targetRef="Activity_0q9icr0"/>
+    <bpmn:serviceTask id="Activity_0zbeicn" name="Web Search (Tavily)">
+      <bpmn:extensionElements>
+        <spiffworkflow:preScript><![CDATA[tavily_request_data = {"query": tool_info.get("args", {}).get("search_query", "")}
+tavily_request_headers = {"Content-Type": "application/json", "Authorization": f"Bearer {tavily_api_key}"}]]></spiffworkflow:preScript>
+        <spiffworkflow:postScript><![CDATA[tool_result_content = "Could not perform web search or extract result."
+if web_search_service_response and web_search_service_response["http_status"] == 200:
+    try:
+        search_results_data = web_search_service_response['body']
+        if isinstance(search_results_data, dict) and "results" in search_results_data:
+            tool_result_content = json.dumps(search_results_data["results"])
+        elif isinstance(search_results_data, dict) and "answer" in search_results_data: # pragma: no cover
+             tool_result_content = search_results_data["answer"]
+        else: # pragma: no cover
+            tool_result_content = json.dumps(web_search_service_response['body'])
+    except Exception as e: # pragma: no cover
+        tool_result_content = f"Error parsing web search result: {str(e)}. Raw: {str(web_search_service_response['body'])}"
+elif web_search_service_response: # pragma: no cover
+    tool_result_content = f"Web search failed with status: {web_search_service_response['http_status']}. Response: {str(web_search_service_response['body'])}"
+else: # pragma: no cover
+    tool_result_content = "Web search did not return a response."
+
+tool_info['result'] = tool_result_content
+
+tool_response_message = {
+    "role": "tool",
+    "tool_call_id": tool_info['id'],
+    "content": tool_result_content
+}
+messages.append(tool_response_message)
+
+del tool_info
+del web_search_service_response
+del tavily_request_data
+del tavily_request_headers
+
+try: del tool_result_content
+except NameError: pass
+try: del search_results_data
+except NameError: pass
+try: del e
+except NameError: pass
+try: del tool_response_message
+except NameError: pass
+]]></spiffworkflow:postScript>
+        <spiffworkflow:serviceTaskOperator id="http/PostRequest" resultVariable="web_search_service_response">
+          <spiffworkflow:parameters>
+            <spiffworkflow:parameter id="url" type="str" value="&quot;https://api.tavily.com/search&quot;"/>
+            <spiffworkflow:parameter id="headers" type="any" value="tavily_request_headers"/>
+            <spiffworkflow:parameter id="data" type="any" value="tavily_request_data"/>
+            <spiffworkflow:parameter id="basic_auth_username" type="str"/>
+            <spiffworkflow:parameter id="basic_auth_password" type="str"/>
+          </spiffworkflow:parameters>
+        </spiffworkflow:serviceTaskOperator>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0uhgh10</bpmn:incoming>
+      <bpmn:outgoing>Flow_1v0u5gk</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0uhgh10" name="Search tool" sourceRef="Gateway_Decision" targetRef="Activity_0zbeicn">
+      <bpmn:conditionExpression>tool_info and tool_info['name'] == "web_search" and iteration_count &lt;= 10</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1v0u5gk" name="Agentic Loop" sourceRef="Activity_0zbeicn" targetRef="Activity_0q9icr0"/>
+    <bpmn:sequenceFlow id="Flow_0djbuol" sourceRef="Activity_1o23xid" targetRef="EndEvent_Finished"/>
+    <bpmn:manualTask id="Activity_1o23xid" name="Show Result">
+      <bpmn:extensionElements>
+        <spiffworkflow:preScript><![CDATA[try: del llm_api_key
+except NameError: pass
+try: del tavily_api_key
+except NameError: pass
+try: del llm_model
+except NameError: pass
+try: del tool_info
+except NameError: pass
+try: del _
+except NameError: pass
+# try: del messages
+# except NameError: pass
+# try: del iteration_count
+# except NameError: pass
+]]></spiffworkflow:preScript>
+        <spiffworkflow:instructionsForEndUser># Result:
+
+
+{{ llm_final_answer|safe }}
+</spiffworkflow:instructionsForEndUser>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_To_End</bpmn:incoming>
+      <bpmn:outgoing>Flow_0djbuol</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:sequenceFlow id="Flow_0gbwgva" sourceRef="Activity_0ethlni" targetRef="Activity_0848a7s"/>
+    <bpmn:userTask id="Activity_0ethlni" name="Enter your question">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="enter_question-schema.json"/>
+          <spiffworkflow:property name="formUiSchemaFilename" value="enter_question-uischema.json"/>
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_To_Initialize</bpmn:incoming>
+      <bpmn:outgoing>Flow_0gbwgva</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1ov0obn" name="Temp tool" sourceRef="Gateway_Decision" targetRef="Activity_05s2w3e">
+      <bpmn:conditionExpression>tool_info and tool_info['name'] == "get_temperature" and iteration_count &lt;= 10</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:serviceTask id="Activity_05s2w3e" name="Get Temperature (Open-Meteo)">
+      <bpmn:extensionElements>
+        <spiffworkflow:preScript><![CDATA[open_meteo_url = f"https://api.open-meteo.com/v1/forecast?latitude={tool_info.get('args', {}).get('latitude')}&longitude={tool_info.get('args', {}).get('longitude')}&current=temperature_2m"
+]]></spiffworkflow:preScript>
+        <spiffworkflow:postScript><![CDATA[tool_result_content = "Could not get temperature or extract result."
+if temperature_service_response and temperature_service_response.get("http_status") == 200:
+    try:
+        response_data = temperature_service_response['body']
+        if isinstance(response_data, dict) and "current" in response_data:
+            tool_result_content = json.dumps(response_data["current"])
+        else: # pragma: no cover
+            tool_result_content = json.dumps(temperature_service_response['body'])
+    except Exception as e: # pragma: no cover
+        tool_result_content = f"Error parsing temperature result: {str(e)}. Raw: {str(temperature_service_response['body'])}"
+elif temperature_service_response: # pragma: no cover
+    tool_result_content = f"Get temperature failed with status: {temperature_service_response['http_status']}. Response: {str(temperature_service_response['body'])}"
+else: # pragma: no cover
+    tool_result_content = "Get temperature did not return a response."
+
+tool_info['result'] = tool_result_content
+
+tool_response_message = {
+    "role": "tool",
+    "tool_call_id": tool_info['id'],
+    "content": tool_result_content
+}
+messages.append(tool_response_message)
+
+del tool_info
+del temperature_service_response
+del open_meteo_url
+
+try: del tool_result_content
+except NameError: pass
+try: del response_data
+except NameError: pass
+try: del e
+except NameError: pass
+try: del tool_response_message
+except NameError: pass
+]]></spiffworkflow:postScript>
+        <spiffworkflow:serviceTaskOperator id="http/GetRequest" resultVariable="temperature_service_response">
+          <spiffworkflow:parameters>
+            <spiffworkflow:parameter id="url" type="str" value="open_meteo_url"/>
+            <spiffworkflow:parameter id="headers" type="any"/>
+            <spiffworkflow:parameter id="params" type="any"/>
+            <spiffworkflow:parameter id="basic_auth_username" type="str"/>
+            <spiffworkflow:parameter id="basic_auth_password" type="str"/>
+          </spiffworkflow:parameters>
+        </spiffworkflow:serviceTaskOperator>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ov0obn</bpmn:incoming>
+      <bpmn:outgoing>Flow_0p6zp6u</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:sequenceFlow id="Flow_0p6zp6u" sourceRef="Activity_05s2w3e" targetRef="Activity_0q9icr0"/>
+    <bpmn:textAnnotation id="TextAnnotation_0iu8r5y">
+      <bpmn:text>STEP 1:  You need API tokens for two services, Gemini, and Tavily.   Select this task, Find the &quot;Script&quot; fold down to the right, click &quot;Launch Editor&quot; and enter your API keys there.  Your edits to this diagram will only exist in your local browser storage.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_10go9ny" associationDirection="None" sourceRef="Activity_0848a7s" targetRef="TextAnnotation_0iu8r5y"/>
+    <bpmn:textAnnotation id="TextAnnotation_13g6q68">
+      <bpmn:text>STEP 2:  Hit the Play button above to start this process.  Follow the instructions and watch this thing run.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0a5bskr" associationDirection="None" sourceRef="Activity_0zbeicn" targetRef="TextAnnotation_13g6q68"/>
+    <bpmn:textAnnotation id="TextAnnotation_1h6i23c">
+      <bpmn:text>STEP 3:  Read about this diagram on our latest article.  Or play around.  You can change EVERYTHING about this diagram and its properties.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1klato0" associationDirection="None" sourceRef="EndEvent_Finished" targetRef="TextAnnotation_1h6i23c"/>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_agent_demo_lmtgcz3">
+      <bpmndi:BPMNShape id="StartEvent_Initial_di" bpmnElement="StartEvent_Initial">
+        <dc:Bounds x="12" y="169" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="-12" y="212" width="86" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ScriptTask_Initialize_di" bpmnElement="ScriptTask_Initialize">
+        <dc:Bounds x="420" y="147" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ScriptTask_ProcessLLMResponse_di" bpmnElement="ScriptTask_ProcessLLMResponse">
+        <dc:Bounds x="720" y="147" width="100" height="80"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="720" y="67" width="100" height="27"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_Decision_di" bpmnElement="Gateway_Decision" isMarkerVisible="true">
+        <dc:Bounds x="905" y="162" width="50" height="50"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="844" y="163" width="72" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ScriptTask_DoCalculation_di" bpmnElement="ScriptTask_DoCalculation">
+        <dc:Bounds x="880" y="0" width="100" height="80"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="795" y="0" width="100" height="27"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Finished_di" bpmnElement="EndEvent_Finished">
+        <dc:Bounds x="1052" y="312" width="36" height="36"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1040" y="274.5" width="60" height="27"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1vaa7q8_di" bpmnElement="Activity_0848a7s">
+        <dc:Bounds x="270" y="147" width="100" height="80"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1jjl8ub_di" bpmnElement="Activity_0q9icr0">
+        <dc:Bounds x="570" y="147" width="100" height="80"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1q1qwek_di" bpmnElement="Activity_0zbeicn">
+        <dc:Bounds x="1105" y="0" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1diy78k_di" bpmnElement="Activity_1o23xid">
+        <dc:Bounds x="880" y="290" width="100" height="80"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0k4m3af_di" bpmnElement="Activity_0ethlni">
+        <dc:Bounds x="110" y="147" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1cryxpp_di" bpmnElement="Activity_05s2w3e">
+        <dc:Bounds x="990" y="0" width="100" height="80"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1klato0_di" bpmnElement="Association_1klato0">
+        <di:waypoint x="1070" y="348"/>
+        <di:waypoint x="1070" y="400"/>
+        <di:waypoint x="870" y="400"/>
+        <di:waypoint x="853" y="380"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_0iu8r5y_di" bpmnElement="TextAnnotation_0iu8r5y">
+        <dc:Bounds x="152" y="-70" width="335" height="99"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_13g6q68_di" bpmnElement="TextAnnotation_13g6q68">
+        <dc:Bounds x="980" y="-160" width="310" height="60"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_To_Initialize_di" bpmnElement="Flow_To_Initialize">
+        <di:waypoint x="48" y="187"/>
+        <di:waypoint x="110" y="187"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_To_CallLLM_di" bpmnElement="Flow_To_CallLLM">
+        <di:waypoint x="520" y="187"/>
+        <di:waypoint x="570" y="187"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_To_DecisionGateway_di" bpmnElement="Flow_To_DecisionGateway">
+        <di:waypoint x="820" y="187"/>
+        <di:waypoint x="905" y="187"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_To_DoCalculation_di" bpmnElement="Flow_To_DoCalculation">
+        <di:waypoint x="930" y="162"/>
+        <di:waypoint x="930" y="80"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="878" y="113" width="43" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_To_End_di" bpmnElement="Flow_To_End">
+        <di:waypoint x="930" y="212"/>
+        <di:waypoint x="930" y="290"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="944" y="236" width="82" height="27"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tvu2i0_di" bpmnElement="Flow_1tvu2i0">
+        <di:waypoint x="370" y="187"/>
+        <di:waypoint x="420" y="187"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tiumz9_di" bpmnElement="Flow_1tiumz9">
+        <di:waypoint x="670" y="187"/>
+        <di:waypoint x="720" y="187"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11bv5u3_di" bpmnElement="Flow_11bv5u3">
+        <di:waypoint x="880" y="40"/>
+        <di:waypoint x="620" y="40"/>
+        <di:waypoint x="620" y="147"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0uhgh10_di" bpmnElement="Flow_0uhgh10">
+        <di:waypoint x="955" y="187"/>
+        <di:waypoint x="1155" y="187"/>
+        <di:waypoint x="1155" y="80"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1092" y="113" width="56" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1v0u5gk_di" bpmnElement="Flow_1v0u5gk">
+        <di:waypoint x="1155" y="0"/>
+        <di:waypoint x="1155" y="-40"/>
+        <di:waypoint x="620" y="-40"/>
+        <di:waypoint x="620" y="147"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="856" y="-57" width="65" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0djbuol_di" bpmnElement="Flow_0djbuol">
+        <di:waypoint x="980" y="330"/>
+        <di:waypoint x="1052" y="330"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gbwgva_di" bpmnElement="Flow_0gbwgva">
+        <di:waypoint x="210" y="187"/>
+        <di:waypoint x="270" y="187"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ov0obn_di" bpmnElement="Flow_1ov0obn">
+        <di:waypoint x="955" y="187"/>
+        <di:waypoint x="1040" y="187"/>
+        <di:waypoint x="1040" y="80"/>
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="986" y="113" width="48" height="14"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0p6zp6u_di" bpmnElement="Flow_0p6zp6u">
+        <di:waypoint x="1040" y="0"/>
+        <di:waypoint x="1040" y="-40"/>
+        <di:waypoint x="620" y="-40"/>
+        <di:waypoint x="620" y="147"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_10go9ny_di" bpmnElement="Association_10go9ny">
+        <di:waypoint x="300" y="147"/>
+        <di:waypoint x="243" y="29"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0a5bskr_di" bpmnElement="Association_0a5bskr">
+        <di:waypoint x="1190" y="0"/>
+        <di:waypoint x="1135" y="-100"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="TextAnnotation_1h6i23c_di" bpmnElement="TextAnnotation_1h6i23c">
+        <dc:Bounds x="630" y="280" width="230" height="100"/>
+        <bpmndi:BPMNLabel/>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

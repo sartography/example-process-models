@@ -153,7 +153,7 @@ You said you would like to hear a joke about Chuck Norris, so here you go:
 &gt; When Chuck Norris falls into the water, Chuck Norris doesn’t get wet. Water gets Chuck Norris.
 
 {% else %}
-You said you didn't want to year a joke about Chuck Norris, so here is a joke that does not include old Chuck.
+You said you didn't want to hear a joke about Chuck Norris, so here is a joke that does not include old Chuck.
 
 &gt; What is an astronaut's favorite part on a computer? The space bar.
 {% endif %}

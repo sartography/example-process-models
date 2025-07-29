@@ -364,7 +364,7 @@ Duplicated footnote reference[^second].
 
 
 ### This is here
-Because we wanted to show that footnotes end up at the very end of the page, not immediately below the footnote refernece.</spiffworkflow:instructionsForEndUser>
+Because we wanted to show that footnotes end up at the very end of the page, not immediately below the footnote reference.</spiffworkflow:instructionsForEndUser>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_1hy1jl1</bpmn:incoming>
       <bpmn:outgoing>Flow_19uhs80</bpmn:outgoing>

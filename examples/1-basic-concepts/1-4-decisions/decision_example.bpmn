@@ -55,7 +55,7 @@ The total cost of your pizza is {{ "${:,.2f}".format(total_cost) }}.
 Thank you for your order! 
 
 #### Calculations
-We used a decision table to come up with the total costs.  Decision tables, in the simplest form are a series of conditions stated like **IF** this is true **THEN** this is the result.  You can open the file up by going to the Model and clicking on the pizza_prizes.dmn table.  But here is a sample of what it contains:
+We used a decision table to come up with the total costs.  Decision tables, in the simplest form are a series of conditions stated like **IF** this is true **THEN** this is the result.  You can open the file up by going to the Model and clicking on the pizza_price.dmn table.  But here is a sample of what it contains:
 
 
 | when **Size** | then **base_price** | and **cost_per_topping** |

@@ -34,7 +34,7 @@
         </outputEntry>
       </rule>
       <rule id="DecisionRule_08fpvbl">
-        <description>Large Pizzas are 16, but extra topings are 2.00.</description>
+        <description>Large Pizzas are 16, but extra toppings are 2.00.</description>
         <inputEntry id="UnaryTests_0g6wb69">
           <text>"Large"</text>
         </inputEntry>

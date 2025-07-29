@@ -14,7 +14,7 @@ something like:
 ```bash
 echo 828e99f8-8437-42b5-854e-a51e2c0a23ad > t 
 ```
-Now we ave a file called "t" that contains our key. This way you can just past many of the commands below.
+Now we have a file called "t" that contains our key. This way you can just paste many of the commands below.
 
 # Step 2:  Create an instance of this process
 

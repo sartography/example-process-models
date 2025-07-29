@@ -27,7 +27,7 @@
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_00mc2nm</bpmn:incoming>
       <bpmn:outgoing>Flow_1ykl7il</bpmn:outgoing>
-      <bpmn:script># Intentinally slow this down so we can see the message 
+      <bpmn:script># Intentionally slow this down so we can see the message 
 # go by when we run this process.
 time.sleep(2)
 
@@ -81,12 +81,10 @@ Please get in touch with us!  We would love to help you build custom scripts int
 The score was calculated in a script task using a bit of the beautiful Python syntax, as shown below ...
 
 ``` python
-if flag_stars.lower().strip() == "twelve":
-    num_correct += 1
-elif int(flag_stars) == 12:
+if flag_stars == 12:
     num_correct += 1
 
-if "nile" in longest.lower():
+if "nile" in longest_river.lower():
     num_correct += 1
 
 if "curie" in woman_nobel.lower():

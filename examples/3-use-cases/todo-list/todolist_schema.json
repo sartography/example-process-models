@@ -8,8 +8,7 @@
       "title": "Todo List",
       "items": {
         "required": [
-          "todoTitle",
-          "isComplete"
+          "todoTitle"
         ],
         "properties": {
           "todoTitle": {

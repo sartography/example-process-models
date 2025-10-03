@@ -1,0 +1,9 @@
+{
+    "description": "",
+    "display_name": "agent-demo-2",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "agent_demo.bpmn",
+    "primary_process_id": "Process_agent_demo_lmtg453221"
+}

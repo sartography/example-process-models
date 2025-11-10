@@ -1,0 +1,12 @@
+{
+  "type": "object",
+  "required": [
+    "new_prompt"
+  ],
+  "properties": {
+    "new_prompt": {
+      "type": "string",
+      "title": "Prompt"
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Real Estate Caller Qualification",
+  "type": "object",
+  "required": ["workingWithAgent", "transactionType", "timeline"],
+  "properties": {
+    "workingWithAgent": {
+      "type": "boolean",
+      "title": "Working With Agent?",
+      "description": "Is the caller currently working with another real estate agent?"
+    },
+    "agentDetails": {
+      "type": "string",
+      "title": "Agent's Name",
+      "description": "Name or details of current agent if applicable"
+    },
+    "transactionType": {
+      "type": "string",
+      "title": "Transaction Type",
+      "enum": ["buying", "selling", "renting", "investing", "both_buy_and_sell"],
+      "description": "Type of real estate transaction"
+    },
+    "timeline": {
+      "type": "string",
+      "enum": ["immediate", "1-3_months", "3-6_months", "6-12_months", "exploring"],
+      "description": "Timeframe for transaction"
+    },
+    "currentSituation": {
+      "type": "string",
+      "enum": ["homeowner", "renter", "living_with_family", "relocating"],
+      "description": "Caller's current living situation"
+    },
+    "motivation": {
+      "type": "string",
+      "description": "Primary reason for buying/selling (e.g., upsizing, downsizing, job relocation, divorce, financial distress, investment)"
+    },
+    "priceRange": {
+      "type": "object",
+      "properties": {
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        }
+      }
+    },
+    "locationPreference": {
+      "type": "string",
+      "description": "Desired area or neighborhood"
+    },
+    "urgencyLevel": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"],
+      "description": "How urgent is their need"
+    }
+  }
+}

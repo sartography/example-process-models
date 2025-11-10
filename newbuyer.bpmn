@@ -1,0 +1,378 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" id="Definitions_96f6665" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.0.0-dev">
+  <bpmn:process id="Process_1761592590874" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1761592590874">
+      <bpmn:outgoing>Flow_1n8ympx</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:scriptTask id="Activity_06li2ed" name="Set up Schema">
+      <bpmn:incoming>Flow_1n8ympx</bpmn:incoming>
+      <bpmn:outgoing>Flow_17jqt1j</bpmn:outgoing>
+      <bpmn:script>responses = {}
+schema = {
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Real Estate Caller Qualification",
+  "type": "object",
+  "required": ["workingWithAgent", "transactionType", "timeline"],
+  "properties": {
+    "workingWithAgent": {
+      "type": "boolean",
+      "description": "Is the caller currently working with another real estate agent?"
+    },
+    "agentDetails": {
+      "type": "string",
+      "description": "Name or details of current agent if applicable"
+    },
+    "transactionType": {
+      "type": "string",
+      "enum": ["buying", "selling", "renting", "investing", "both_buy_and_sell"],
+      "description": "Type of real estate transaction"
+    },
+    "timeline": {
+      "type": "string",
+      "enum": ["immediate", "1-3_months", "3-6_months", "6-12_months", "exploring"],
+      "description": "Timeframe for transaction"
+    },
+    "currentSituation": {
+      "type": "string",
+      "enum": ["homeowner", "renter", "living_with_family", "relocating"],
+      "description": "Caller's current living situation"
+    },
+    "motivation": {
+      "type": "string",
+      "description": "Primary reason for buying/selling (e.g., upsizing, downsizing, job relocation, divorce, financial distress, investment)"
+    },
+    "priceRange": {
+      "type": "object",
+      "properties": {
+        "min": {
+          "type": "number"
+        },
+        "max": {
+          "type": "number"
+        }
+      }
+    },
+    "locationPreference": {
+      "type": "string",
+      "description": "Desired area or neighborhood"
+    },
+    "urgencyLevel": {
+      "type": "string",
+      "enum": ["low", "medium", "high", "critical"],
+      "description": "How urgent is their need"
+    }
+  }
+}</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:userTask id="Activity_0dhnjj9z" name="Request More Information">
+      <bpmn:extensionElements>
+        <spiffworkflow:postScript># add in the new response from the LLM
+data["messages"].append({"role":"assistant", "content": user_message})
+
+# Add in the new prompt from the person
+data["messages"].append({"role":"user", "content": new_prompt})
+</spiffworkflow:postScript>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="new_prompt-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="new_prompt-uischema.json" />
+        </spiffworkflow:properties>
+        <spiffworkflow:instructionsForEndUser>{{user_message}}</spiffworkflow:instructionsForEndUser>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0zzvof7</bpmn:incoming>
+      <bpmn:outgoing>Flow_16lggho</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_1oca83b">
+      <bpmn:incoming>Flow_16lggho</bpmn:incoming>
+      <bpmn:outgoing>Flow_0lnb03x</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:exclusiveGateway id="Gateway_00sbhqx">
+      <bpmn:incoming>Flow_0lnb03x</bpmn:incoming>
+      <bpmn:incoming>Flow_12b1f2o</bpmn:incoming>
+      <bpmn:outgoing>Flow_0wmu1kd</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:scriptTask id="Activity_17vc4fn" name="Configure the LLM">
+      <bpmn:extensionElements>
+        <spiffworkflow:instructionsForEndUser />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_17jqt1j</bpmn:incoming>
+      <bpmn:outgoing>Flow_12b1f2o</bpmn:outgoing>
+      <bpmn:script>url = "https://api.anthropic.com/v1/messages"
+apikey = ""
+anthropic_version = "2023-06-01"
+model = "claude-sonnet-4-20250514"
+
+headers = {
+    "x-api-key": apikey,
+    "anthropic-version": anthropic_version,
+    "content-type": "application/json" 
+}
+
+system = """
+You are a friendly and conversational and direct real estate agent
+You are honest and up front about being an AI.
+You only ask one question at a time.
+Your sole mission is to complete this json schema: """ + json.dumps(schema)
+
+
+tool_description = """
+Saves responses from the user as json.
+Use as often as possible to save information, while you continue to ask additional questions.
+The tool does not provide any information when executed.
+"""
+
+initial_message = """
+I am new to house buying. I am not sure where 
+to start.  Please ask me questions to help me 
+get oriented.
+"""
+
+
+tools = [
+  {
+  "name": "update_json",
+  "description": tool_description,
+  "input_schema": {
+    "additionalProperties": False,
+    "properties": {
+      "json": {
+        "description": "The json data that is the collected so far.",
+        "type": "object"
+      }
+    },
+    "required": ["json"],
+    "type": "object"
+  }
+}
+]
+
+data = {
+    "system": system,
+    "messages": [
+      {"role": "user",
+       "content": initial_message}
+    ],
+    "model": "claude-sonnet-4-20250514",
+    "max_tokens": 512,
+    "tools": tools
+}
+</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:serviceTask id="Activity_0f3vf1a" name="Call The LLM">
+      <bpmn:extensionElements>
+        <spiffworkflow:postScript>response = api_response["body"]
+tool_call = ""
+content = ""
+contents = response.get("content")
+user_responses = {}
+is_complete = False
+for content in contents:
+  if content["type"] == "text":
+    user_message = content["text"]
+  if content["type"] == "tool_use":
+    user_responses = content["input"]["json"]
+  
+</spiffworkflow:postScript>
+        <spiffworkflow:serviceTaskOperator id="http/PostRequest" resultVariable="api_response">
+          <spiffworkflow:parameters>
+            <spiffworkflow:parameter id="url" type="str" value="url" />
+            <spiffworkflow:parameter id="headers" type="any" value="headers" />
+            <spiffworkflow:parameter id="data" type="any" value="data" />
+            <spiffworkflow:parameter id="basic_auth_username" type="str" />
+            <spiffworkflow:parameter id="basic_auth_password" type="str" />
+          </spiffworkflow:parameters>
+        </spiffworkflow:serviceTaskOperator>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0wmu1kd</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ptrgjx</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:exclusiveGateway id="Gateway_1ltnks7" default="Flow_0zzvof7">
+      <bpmn:incoming>Flow_0vdux9a</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zzvof7</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0vhfhef</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1xcn4aq</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:scriptTask id="Activity_1qxawxs" name="Check Responses">
+      <bpmn:incoming>Flow_0ptrgjx</bpmn:incoming>
+      <bpmn:outgoing>Flow_0vdux9a</bpmn:outgoing>
+      <bpmn:script>if "workingWithAgent" in user_responses:
+  workingWithAgent = user_responses["workingWithAgent"]
+else:
+  workingWithAgent = False
+
+is_complete = True
+required = ["workingWithAgent", "transactionType", "timeline"]
+for r in required:
+  if r not in user_responses:
+    is_complete = False
+
+</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:endEvent id="Event_1abc1ff">
+      <bpmn:incoming>Flow_1ffhwhd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1n8ympx" sourceRef="StartEvent_1761592590874" targetRef="Activity_06li2ed" />
+    <bpmn:sequenceFlow id="Flow_17jqt1j" sourceRef="Activity_06li2ed" targetRef="Activity_17vc4fn" />
+    <bpmn:sequenceFlow id="Flow_0zzvof7" sourceRef="Gateway_1ltnks7" targetRef="Activity_0dhnjj9z" />
+    <bpmn:sequenceFlow id="Flow_16lggho" sourceRef="Activity_0dhnjj9z" targetRef="Gateway_1oca83b" />
+    <bpmn:sequenceFlow id="Flow_0lnb03x" name="The Agentic Loop" sourceRef="Gateway_1oca83b" targetRef="Gateway_00sbhqx" />
+    <bpmn:sequenceFlow id="Flow_12b1f2o" sourceRef="Activity_17vc4fn" targetRef="Gateway_00sbhqx" />
+    <bpmn:sequenceFlow id="Flow_0wmu1kd" sourceRef="Gateway_00sbhqx" targetRef="Activity_0f3vf1a" />
+    <bpmn:sequenceFlow id="Flow_0ptrgjx" sourceRef="Activity_0f3vf1a" targetRef="Activity_1qxawxs" />
+    <bpmn:sequenceFlow id="Flow_0vdux9a" sourceRef="Activity_1qxawxs" targetRef="Gateway_1ltnks7" />
+    <bpmn:sequenceFlow id="Flow_0vhfhef" name="All questions answered ..." sourceRef="Gateway_1ltnks7" targetRef="Activity_0shflpi">
+      <bpmn:conditionExpression>is_complete</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1ffhwhd" sourceRef="Activity_0shflpi" targetRef="Event_1abc1ff" />
+    <bpmn:dataObject id="DataObject_1qbzfph" name="shared_form" />
+    <bpmn:dataObjectReference id="DataObjectReference_065x1rl" dataObjectRef="DataObject_1qbzfph" />
+    <bpmn:endEvent id="Event_1cu1ybx">
+      <bpmn:incoming>Flow_1do8zcr</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1xcn4aq" name="already working with an agent?" sourceRef="Gateway_1ltnks7" targetRef="Activity_13kco7t">
+      <bpmn:conditionExpression>workingWithAgent</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:manualTask id="Activity_13kco7t" name="Gently end converstaion">
+      <bpmn:extensionElements>
+        <spiffworkflow:instructionsForEndUser>Because you are dealing with another realtor already, we are legally required to send you back to them for more information about the properties you are looking for.  Thank you for contacting us.  </spiffworkflow:instructionsForEndUser>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1xcn4aq</bpmn:incoming>
+      <bpmn:outgoing>Flow_1do8zcr</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:sequenceFlow id="Flow_1do8zcr" sourceRef="Activity_13kco7t" targetRef="Event_1cu1ybx" />
+    <bpmn:userTask id="Activity_0shflpi" name="Move on to next step">
+      <bpmn:extensionElements>
+        <spiffworkflow:instructionsForEndUser>Here we can move on to the next set of questions, which will vary - we could do down different paths depending on if is sale, or purchase or both ... only asking questions as needed, and specific to what is happening.  And ALWAYS getting the answers we need. </spiffworkflow:instructionsForEndUser>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="intake-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="intake-uischema.json" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0vhfhef</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ffhwhd</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0yljo7m" name="Form Preview">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="intake-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="intake-uischema.json" />
+        </spiffworkflow:properties>
+      </bpmn:extensionElements>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1761592590874">
+      <bpmndi:BPMNShape id="StartEvent_1761592590874_di" bpmnElement="StartEvent_1761592590874">
+        <dc:Bounds x="-8" y="142" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0f4l18y_di" bpmnElement="Activity_06li2ed">
+        <dc:Bounds x="80" y="120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_063zc54_di" bpmnElement="Activity_0dhnjj9z">
+        <dc:Bounds x="840" y="120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1oca83b_di" bpmnElement="Gateway_1oca83b" isMarkerVisible="true">
+        <dc:Bounds x="1005" y="135" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_00sbhqx_di" bpmnElement="Gateway_00sbhqx" isMarkerVisible="true">
+        <dc:Bounds x="375" y="135" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1lcz9v1_di" bpmnElement="Activity_17vc4fn">
+        <dc:Bounds x="240" y="120" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1pd11d5_di" bpmnElement="Activity_0f3vf1a">
+        <dc:Bounds x="450" y="120" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1ltnks7_di" bpmnElement="Gateway_1ltnks7" isMarkerVisible="true">
+        <dc:Bounds x="745" y="135" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1bbdd8z_di" bpmnElement="Activity_1qxawxs">
+        <dc:Bounds x="600" y="120" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1abc1ff_di" bpmnElement="Event_1abc1ff">
+        <dc:Bounds x="1182" y="362" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1cu1ybx_di" bpmnElement="Event_1cu1ybx">
+        <dc:Bounds x="992" y="252" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ed82l5_di" bpmnElement="Activity_13kco7t">
+        <dc:Bounds x="840" y="230" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0hqzpnx_di" bpmnElement="Activity_0shflpi">
+        <dc:Bounds x="840" y="340" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_071jdi4_di" bpmnElement="Activity_0yljo7m">
+        <dc:Bounds x="80" y="330" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1n8ympx_di" bpmnElement="Flow_1n8ympx">
+        <di:waypoint x="28" y="160" />
+        <di:waypoint x="80" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17jqt1j_di" bpmnElement="Flow_17jqt1j">
+        <di:waypoint x="180" y="160" />
+        <di:waypoint x="240" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zzvof7_di" bpmnElement="Flow_0zzvof7">
+        <di:waypoint x="795" y="160" />
+        <di:waypoint x="840" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16lggho_di" bpmnElement="Flow_16lggho">
+        <di:waypoint x="940" y="160" />
+        <di:waypoint x="1005" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0lnb03x_di" bpmnElement="Flow_0lnb03x">
+        <di:waypoint x="1030" y="135" />
+        <di:waypoint x="1030" y="60" />
+        <di:waypoint x="400" y="60" />
+        <di:waypoint x="400" y="135" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="672" y="42" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12b1f2o_di" bpmnElement="Flow_12b1f2o">
+        <di:waypoint x="340" y="160" />
+        <di:waypoint x="375" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0wmu1kd_di" bpmnElement="Flow_0wmu1kd">
+        <di:waypoint x="425" y="160" />
+        <di:waypoint x="450" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ptrgjx_di" bpmnElement="Flow_0ptrgjx">
+        <di:waypoint x="550" y="160" />
+        <di:waypoint x="600" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vdux9a_di" bpmnElement="Flow_0vdux9a">
+        <di:waypoint x="700" y="160" />
+        <di:waypoint x="745" y="160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vhfhef_di" bpmnElement="Flow_0vhfhef">
+        <di:waypoint x="770" y="185" />
+        <di:waypoint x="770" y="380" />
+        <di:waypoint x="840" y="380" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="687" y="366" width="66" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ffhwhd_di" bpmnElement="Flow_1ffhwhd">
+        <di:waypoint x="940" y="380" />
+        <di:waypoint x="1182" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xcn4aq_di" bpmnElement="Flow_1xcn4aq">
+        <di:waypoint x="770" y="185" />
+        <di:waypoint x="770" y="270" />
+        <di:waypoint x="840" y="270" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="679" y="246" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1do8zcr_di" bpmnElement="Flow_1do8zcr">
+        <di:waypoint x="940" y="270" />
+        <di:waypoint x="992" y="270" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

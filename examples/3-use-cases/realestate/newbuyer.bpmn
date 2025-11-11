@@ -66,9 +66,7 @@ schema = {
     </bpmn:scriptTask>
     <bpmn:userTask id="Activity_0dhnjj9z" name="Request More Information">
       <bpmn:extensionElements>
-        <spiffworkflow:postScript># add in the new response from the LLM
-data["messages"].append({"role":"assistant", "content": user_message})
-
+        <spiffworkflow:postScript>
 # Add in the new prompt from the person
 data["messages"].append({"role":"user", "content": new_prompt})
 </spiffworkflow:postScript>
@@ -111,7 +109,8 @@ system = """
 You are a friendly and conversational and direct real estate agent
 You are honest and up front about being an AI.
 You only ask one question at a time.
-Your sole mission is to complete this json schema: """ + json.dumps(schema)
+Your sole mission is to complete the intake process
+described by this json schema: """ + json.dumps(schema)
 
 
 tool_description = """
@@ -122,8 +121,8 @@ The tool does not provide any information when executed.
 
 initial_message = """
 I am new to house buying. I am not sure where 
-to start.  Please ask me questions to help me 
-get oriented.
+to start.  Guide me with questions to complete
+the intake process you were given. 
 """
 
 
@@ -165,12 +164,20 @@ content = ""
 contents = response.get("content")
 user_responses = {}
 is_complete = False
+
+data["messages"].append({"role":"assistant", "content": contents})
+
 for content in contents:
   if content["type"] == "text":
     user_message = content["text"]
   if content["type"] == "tool_use":
     user_responses = content["input"]["json"]
-  
+    tool_content = {
+        "type": "tool_result",
+        "content": "json updated",
+        "tool_use_id": content["id"]
+    }
+    data["messages"].append({"role":"user", "content": [tool_content]})
 </spiffworkflow:postScript>
         <spiffworkflow:serviceTaskOperator id="http/PostRequest" resultVariable="api_response">
           <spiffworkflow:parameters>
@@ -239,17 +246,6 @@ for r in required:
       <bpmn:outgoing>Flow_1do8zcr</bpmn:outgoing>
     </bpmn:manualTask>
     <bpmn:sequenceFlow id="Flow_1do8zcr" sourceRef="Activity_13kco7t" targetRef="Event_1cu1ybx" />
-    <bpmn:userTask id="Activity_0shflpi" name="Move on to next step">
-      <bpmn:extensionElements>
-        <spiffworkflow:instructionsForEndUser>Here we can move on to the next set of questions, which will vary - we could do down different paths depending on if is sale, or purchase or both ... only asking questions as needed, and specific to what is happening.  And ALWAYS getting the answers we need. </spiffworkflow:instructionsForEndUser>
-        <spiffworkflow:properties>
-          <spiffworkflow:property name="formJsonSchemaFilename" value="intake-schema.json" />
-          <spiffworkflow:property name="formUiSchemaFilename" value="intake-uischema.json" />
-        </spiffworkflow:properties>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0vhfhef</bpmn:incoming>
-      <bpmn:outgoing>Flow_1ffhwhd</bpmn:outgoing>
-    </bpmn:userTask>
     <bpmn:userTask id="Activity_0yljo7m" name="Form Preview">
       <bpmn:extensionElements>
         <spiffworkflow:properties>
@@ -258,6 +254,23 @@ for r in required:
         </spiffworkflow:properties>
       </bpmn:extensionElements>
     </bpmn:userTask>
+    <bpmn:manualTask id="Activity_0shflpi" name="Move on to next step">
+      <bpmn:extensionElements>
+        <spiffworkflow:instructionsForEndUser>Here we can move on to the next set of questions, which will vary - we could do down different paths depending on if is sale, or purchase or both ... only asking questions as needed, and specific to what is happening.  And ALWAYS getting the answers we need.   Here is what we have learned so far ...
+
+{% for key, value in user_responses.items() %}
+* **{{key}}**:  {{value}}
+{% endfor %}
+</spiffworkflow:instructionsForEndUser>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="intake-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="intake-uischema.json" />
+        </spiffworkflow:properties>
+        <spiffworkflow:postScript />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0vhfhef</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ffhwhd</bpmn:outgoing>
+    </bpmn:manualTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1761592590874">
@@ -281,7 +294,7 @@ for r in required:
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1pd11d5_di" bpmnElement="Activity_0f3vf1a">
-        <dc:Bounds x="450" y="120" width="100" height="80" />
+        <dc:Bounds x="451" y="120" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Gateway_1ltnks7_di" bpmnElement="Gateway_1ltnks7" isMarkerVisible="true">
@@ -301,12 +314,12 @@ for r in required:
         <dc:Bounds x="840" y="230" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0hqzpnx_di" bpmnElement="Activity_0shflpi">
-        <dc:Bounds x="840" y="340" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_071jdi4_di" bpmnElement="Activity_0yljo7m">
         <dc:Bounds x="80" y="330" width="100" height="80" />
         <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1m7ag11_di" bpmnElement="Activity_0shflpi">
+        <dc:Bounds x="840" y="340" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_1n8ympx_di" bpmnElement="Flow_1n8ympx">
         <di:waypoint x="28" y="160" />
@@ -339,10 +352,10 @@ for r in required:
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0wmu1kd_di" bpmnElement="Flow_0wmu1kd">
         <di:waypoint x="425" y="160" />
-        <di:waypoint x="450" y="160" />
+        <di:waypoint x="451" y="160" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0ptrgjx_di" bpmnElement="Flow_0ptrgjx">
-        <di:waypoint x="550" y="160" />
+        <di:waypoint x="551" y="160" />
         <di:waypoint x="600" y="160" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_0vdux9a_di" bpmnElement="Flow_0vdux9a">

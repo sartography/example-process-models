@@ -1,0 +1,9 @@
+{
+    "description": "Replace web forms with conversations.  A demonstration that uses an LLM to gather information and the BPMN to keep the conversation on track.",
+    "display_name": "Conversational Real Estate Intake Process",
+    "exception_notification_addresses": [],
+    "fault_or_suspend_on_exception": "fault",
+    "metadata_extraction_paths": null,
+    "primary_file_name": "newbuyer.bpmn",
+    "primary_process_id": "Process_1761592590874"
+}

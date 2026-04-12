@@ -1,0 +1,37 @@
+{
+  "title": "Lunar Flyby Observations",
+  "description": "Record observations during the lunar flyby.",
+  "type": "object",
+  "properties": {
+    "observation_notes": {
+      "type": "string",
+      "title": "Observation Notes"
+    },
+    "photos_taken": {
+      "type": "integer",
+      "title": "Number of Photos Taken",
+      "default": 0,
+      "minimum": 0
+    },
+    "instruments_nominal": {
+      "type": "boolean",
+      "title": "All Instruments Nominal",
+      "default": true
+    },
+    "mission": {
+      "type": "string",
+      "title": "Mission Name",
+      "default": "Enterprise"
+    },
+    "crew_morale": {
+      "type": "string",
+      "title": "Crew Morale",
+      "enum": [
+        "Excellent",
+        "Good",
+        "Fair"
+      ],
+      "default": "Excellent"
+    }
+  }
+}

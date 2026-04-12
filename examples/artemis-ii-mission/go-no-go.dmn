@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="https://www.omg.org/spec/DMN/20191111/MODEL/" xmlns:dmndi="https://www.omg.org/spec/DMN/20191111/DMNDI/" xmlns:dc="http://www.omg.org/spec/DMN/20180521/DC/" xmlns:biodi="http://bpmn.io/schema/dmn/biodi/2.0" id="Definitions_artemis_dmn" name="DRD" namespace="http://camunda.org/schema/1.0/dmn">
+  <decision id="go_no_go_decision_table" name="Go / No-Go Launch Decision">
+    <decisionTable id="DecisionTable_1" hitPolicy="FIRST">
+      <input id="Input_weather" label="Weather Status" biodi:width="192">
+        <inputExpression id="InputExpression_weather" typeRef="string">
+          <text>weather_status</text>
+        </inputExpression>
+      </input>
+      <input id="Input_systems" label="Systems Status" biodi:width="192">
+        <inputExpression id="InputExpression_systems" typeRef="string">
+          <text>systems_status</text>
+        </inputExpression>
+      </input>
+      <output id="Output_decision" label="Launch Decision" name="launch_decision" typeRef="string" biodi:width="150" />
+      <output id="Output_rationale" label="Decision Rationale" name="decision_rationale" typeRef="string" biodi:width="300" />
+      <rule id="Rule_red_weather">
+        <description>Red weather is always a no-go</description>
+        <inputEntry id="Input_red">
+          <text>"red"</text>
+        </inputEntry>
+        <inputEntry id="Input_any_1">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="Output_no_go_1">
+          <text>"no_go"</text>
+        </outputEntry>
+        <outputEntry id="Output_rationale_1">
+          <text>"Weather conditions unacceptable for launch"</text>
+        </outputEntry>
+      </rule>
+      <rule id="Rule_critical_systems">
+        <description>Critical system failure is always a no-go</description>
+        <inputEntry id="Input_any_2">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="Input_critical">
+          <text>"critical"</text>
+        </inputEntry>
+        <outputEntry id="Output_no_go_2">
+          <text>"no_go"</text>
+        </outputEntry>
+        <outputEntry id="Output_rationale_2">
+          <text>"Critical system failure detected"</text>
+        </outputEntry>
+      </rule>
+      <rule id="Rule_degraded_systems">
+        <description>Degraded systems are a no-go</description>
+        <inputEntry id="Input_any_3">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="Input_degraded">
+          <text>"degraded"</text>
+        </inputEntry>
+        <outputEntry id="Output_no_go_3">
+          <text>"no_go"</text>
+        </outputEntry>
+        <outputEntry id="Output_rationale_3">
+          <text>"Degraded systems — launch not safe"</text>
+        </outputEntry>
+      </rule>
+      <rule id="Rule_green_nominal">
+        <description>Clear weather and nominal systems — go for launch</description>
+        <inputEntry id="Input_green">
+          <text>"green"</text>
+        </inputEntry>
+        <inputEntry id="Input_nominal_1">
+          <text>"nominal"</text>
+        </inputEntry>
+        <outputEntry id="Output_go_1">
+          <text>"go"</text>
+        </outputEntry>
+        <outputEntry id="Output_rationale_4">
+          <text>"All systems nominal, weather clear for launch"</text>
+        </outputEntry>
+      </rule>
+      <rule id="Rule_yellow_nominal">
+        <description>Marginal weather but systems nominal — acceptable</description>
+        <inputEntry id="Input_yellow">
+          <text>"yellow"</text>
+        </inputEntry>
+        <inputEntry id="Input_nominal_2">
+          <text>"nominal"</text>
+        </inputEntry>
+        <outputEntry id="Output_go_2">
+          <text>"go"</text>
+        </outputEntry>
+        <outputEntry id="Output_rationale_5">
+          <text>"Weather marginal but within acceptable limits, all systems nominal"</text>
+        </outputEntry>
+      </rule>
+      <rule id="Rule_default">
+        <description>Default — do not launch</description>
+        <inputEntry id="Input_any_4">
+          <text></text>
+        </inputEntry>
+        <inputEntry id="Input_any_5">
+          <text></text>
+        </inputEntry>
+        <outputEntry id="Output_no_go_4">
+          <text>"no_go"</text>
+        </outputEntry>
+        <outputEntry id="Output_rationale_6">
+          <text>"Conditions not confirmed safe for launch"</text>
+        </outputEntry>
+      </rule>
+    </decisionTable>
+  </decision>
+  <dmndi:DMNDI>
+    <dmndi:DMNDiagram id="DMNDiagram_1">
+      <dmndi:DMNShape id="DMNShape_1" dmnElementRef="go_no_go_decision_table">
+        <dc:Bounds height="80" width="180" x="157" y="151" />
+      </dmndi:DMNShape>
+    </dmndi:DMNDiagram>
+  </dmndi:DMNDI>
+</definitions>

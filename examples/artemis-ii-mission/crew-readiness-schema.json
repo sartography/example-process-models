@@ -1,0 +1,50 @@
+{
+  "title": "Crew Readiness Verification",
+  "description": "Verify all crew members are ready for launch.",
+  "type": "object",
+  "required": [
+    "suit_integrity",
+    "comm_systems",
+    "life_support",
+    "crew_health",
+    "ralf_onboard",
+    "ralf_food"
+  ],
+  "properties": {
+    "suit_integrity": {
+      "type": "boolean",
+      "title": "Suit Integrity Confirmed",
+      "default": false
+    },
+    "comm_systems": {
+      "type": "boolean",
+      "title": "Communication Systems Verified",
+      "default": false
+    },
+    "life_support": {
+      "type": "boolean",
+      "title": "Life Support Systems Nominal",
+      "default": false
+    },
+    "crew_health": {
+      "type": "string",
+      "title": "Crew Health Status",
+      "enum": [
+        "All Crew Flight Ready",
+        "Minor Issues - Acceptable",
+        "Medical Hold"
+      ],
+      "default": "All Crew Flight Ready"
+    },
+    "ralf_onboard": {
+      "type": "boolean",
+      "title": "Ralf the Dog is On Board",
+      "default": false
+    },
+    "ralf_food": {
+      "type": "boolean",
+      "title": "Ralf the Dog Has Food",
+      "default": false
+    }
+  }
+}

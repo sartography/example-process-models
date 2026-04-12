@@ -1,0 +1,38 @@
+{
+  "title": "Re-Entry Preparation Checklist",
+  "description": "Complete all checks before atmospheric re-entry.",
+  "type": "object",
+  "required": [
+    "heat_shield_verified",
+    "trajectory_confirmed",
+    "comm_blackout_briefed",
+    "recovery_team_notified"
+  ],
+  "properties": {
+    "heat_shield_verified": {
+      "type": "boolean",
+      "title": "Heat Shield Integrity Verified",
+      "default": false
+    },
+    "trajectory_confirmed": {
+      "type": "boolean",
+      "title": "Re-Entry Trajectory Confirmed",
+      "default": false
+    },
+    "comm_blackout_briefed": {
+      "type": "boolean",
+      "title": "Crew Briefed on Communications Blackout",
+      "default": false
+    },
+    "recovery_team_notified": {
+      "type": "boolean",
+      "title": "Recovery Team Notified",
+      "default": false
+    },
+    "stowage_secured": {
+      "type": "boolean",
+      "title": "All Equipment Stowed and Secured",
+      "default": false
+    }
+  }
+}

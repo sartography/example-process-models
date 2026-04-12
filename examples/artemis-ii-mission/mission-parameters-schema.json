@@ -1,0 +1,46 @@
+{
+  "title": "Artemis II Mission Parameters",
+  "description": "Configure the mission parameters for the Artemis II crewed lunar flyby.",
+  "type": "object",
+  "required": [
+    "mission_name",
+    "commander",
+    "pilot",
+    "mission_specialist_1",
+    "mission_specialist_2"
+  ],
+  "properties": {
+    "mission_name": {
+      "type": "string",
+      "title": "Mission Name",
+      "default": "Artemis II"
+    },
+    "commander": {
+      "type": "string",
+      "title": "Commander",
+      "default": "Reid Wiseman"
+    },
+    "pilot": {
+      "type": "string",
+      "title": "Pilot",
+      "default": "Victor Glover"
+    },
+    "mission_specialist_1": {
+      "type": "string",
+      "title": "Mission Specialist 1",
+      "default": "Christina Koch"
+    },
+    "mission_specialist_2": {
+      "type": "string",
+      "title": "Mission Specialist 2",
+      "default": "Jeremy Hansen"
+    },
+    "mission_duration_days": {
+      "type": "integer",
+      "title": "Mission Duration (days)",
+      "default": 10,
+      "minimum": 1,
+      "maximum": 30
+    }
+  }
+}

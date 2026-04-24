@@ -1,6 +1,6 @@
 {
     "description": "",
-    "display_name": "AI Lab",I 
+    "display_name": "AI Lab", 
     "exception_notification_addresses": [],
     "fault_or_suspend_on_exception": "fault",
     "metadata_extraction_paths": null,

@@ -1,63 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:spiffworkflow="http://spiffworkflow.org/bpmn/schema/1.0/core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.20.0">
   <bpmn:process id="Process_CompareTemperaturesAgent" name="Add Your API Keys Here!" isExecutable="true">
-    <bpmn:sequenceFlow id="Flow_0l70b6x" sourceRef="Activity_13ifnen" targetRef="Activity_0mflkvo" />
-    <bpmn:sequenceFlow id="Flow_0sz5gi2" sourceRef="Activity_0mflkvo" targetRef="Activity_1gay05n" />
-    <bpmn:endEvent id="Event_0cw1sn4">
-      <bpmn:incoming>Flow_03numl1</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:sequenceFlow id="Flow_03numl1" sourceRef="Activity_1gay05n" targetRef="Event_0cw1sn4" />
-    <bpmn:scriptTask id="Activity_13ifnen" name="Is it safe for me to exercise today?">
-      <bpmn:incoming>Flow_1yrgbbo</bpmn:incoming>
-      <bpmn:outgoing>Flow_0l70b6x</bpmn:outgoing>
-      <bpmn:script>url = "https://api.hyperbolic.xyz/v1/completions"
-
-hyperbolic_api_key = "ENTER YOUR KEY HERE"
-
-headers = {
-    "Content-Type": "application/json",
-    "Authorization": "Bearer " + hyperbolic_api_key
-}
-
-# This is a base model.  It has not had post training.
-# It will likely not pattern it's response to emulate a
-# conversation.
-model = "meta-llama/Meta-Llama-3.1-405B" 
-
-
-data = {
-    "prompt": "Is it safe for me to exercise outside today?",
-    "model": "meta-llama/Meta-Llama-3.1-405B",
-    "max_tokens": 25,
-    "temperature": 0.7,
-    "top_p": 0.9
-}
-</bpmn:script>
-    </bpmn:scriptTask>
-    <bpmn:serviceTask id="Activity_0mflkvo" name="Ask the AI">
-      <bpmn:extensionElements>
-        <spiffworkflow:serviceTaskOperator id="http/PostRequest" resultVariable="api_response">
-          <spiffworkflow:parameters>
-            <spiffworkflow:parameter id="url" type="str" value="url" />
-            <spiffworkflow:parameter id="headers" type="any" value="headers" />
-            <spiffworkflow:parameter id="data" type="any" value="data" />
-            <spiffworkflow:parameter id="basic_auth_username" type="str" />
-            <spiffworkflow:parameter id="basic_auth_password" type="str" />
-          </spiffworkflow:parameters>
-        </spiffworkflow:serviceTaskOperator>
-        <spiffworkflow:postScript>message = api_response["body"]["choices"][0]["text"]</spiffworkflow:postScript>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0l70b6x</bpmn:incoming>
-      <bpmn:outgoing>Flow_0sz5gi2</bpmn:outgoing>
-    </bpmn:serviceTask>
-    <bpmn:manualTask id="Activity_1gay05n" name="Present Results">
-      <bpmn:extensionElements>
-        <spiffworkflow:instructionsForEndUser># The response is
-{{message}}</spiffworkflow:instructionsForEndUser>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_0sz5gi2</bpmn:incoming>
-      <bpmn:outgoing>Flow_03numl1</bpmn:outgoing>
-    </bpmn:manualTask>
     <bpmn:serviceTask id="Activity_16evkuv" name="Ask the AI">
       <bpmn:extensionElements>
         <spiffworkflow:serviceTaskOperator id="http/PostRequest" resultVariable="api_response">
@@ -93,7 +36,7 @@ data = {
       <bpmn:outgoing>Flow_13yzqu7</bpmn:outgoing>
       <bpmn:script>url = "https://api.hyperbolic.xyz/v1/chat/completions"
 
-hyperbolic_api_key = "ENTER YOUR KEY HERE"
+hyperbolic_api_key = ""
 
 headers = {
     "Content-Type": "application/json",
@@ -123,11 +66,13 @@ data = {
           </spiffworkflow:parameters>
         </spiffworkflow:serviceTaskOperator>
         <spiffworkflow:postScript>message = api_response["body"]["choices"][0]["message"]["content"]</spiffworkflow:postScript>
+        <spiffworkflow:instructionsForEndUser></spiffworkflow:instructionsForEndUser>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_10rvxap</bpmn:incoming>
       <bpmn:outgoing>Flow_01za4vd</bpmn:outgoing>
     </bpmn:serviceTask>
     <bpmn:scriptTask id="Activity_0n6jsrk" name="Is it safe for me to exercise today?">
+      <bpmn:incoming>Flow_0qr5ghq</bpmn:incoming>
       <bpmn:outgoing>Flow_0gpori6</bpmn:outgoing>
       <bpmn:script>url = "https://api.hyperbolic.xyz/v1/chat/completions"
 headers = {
@@ -140,7 +85,7 @@ data = {
       "content": "Is it safe to exercise outside today?"
     }],
     "model": "meta-llama/Llama-3.3-70B-Instruct",
-    "max_tokens": 512,
+    "max_tokens": 50,
     "temperature": 0.1,
     "top_p": 0.9
 }</bpmn:script>
@@ -150,19 +95,21 @@ data = {
     <bpmn:sequenceFlow id="Flow_1b32iiv" sourceRef="Activity_1kfcdee" targetRef="Gateway_1dfj9la" />
     <bpmn:userTask id="Activity_1kfcdee" name="Present Results and new prompt">
       <bpmn:extensionElements>
-        <spiffworkflow:instructionsForEndUser># The response is
-{{message}}
-</spiffworkflow:instructionsForEndUser>
+        <spiffworkflow:instructionsForEndUser>{% for message in data["messages"] %}
+* **{{ message.role | capitalize }}:** {{ message.content | truncate(200) }}
+
+{% endfor %}
+* **Assistant**: {{message}}</spiffworkflow:instructionsForEndUser>
         <spiffworkflow:properties>
-          <spiffworkflow:property name="formJsonSchemaFilename" value="new_prompt-schema.json" />
-          <spiffworkflow:property name="formUiSchemaFilename" value="new_prompt-uischema.json" />
+          <spiffworkflow:property name="formJsonSchemaFilename" value="prompt-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="prompt-uischema.json" />
         </spiffworkflow:properties>
         <spiffworkflow:postScript># add in the new response from the LLM
 data["messages"].append(api_response["body"]["choices"][0]["message"])
 
 # Add in the new prompt from the person
-data["messages"].append({"role":"user", "content": new_prompt})
-</spiffworkflow:postScript>
+data["messages"].append({"role":"user", "content": new_prompt})</spiffworkflow:postScript>
+        <spiffworkflow:preScript>new_prompt = ""</spiffworkflow:preScript>
       </bpmn:extensionElements>
       <bpmn:incoming>Flow_01za4vd</bpmn:incoming>
       <bpmn:outgoing>Flow_1b32iiv</bpmn:outgoing>
@@ -185,39 +132,69 @@ data["messages"].append({"role":"user", "content": new_prompt})
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_10rvxap" sourceRef="Gateway_0opunjy" targetRef="Activity_0b3w3se" />
     <bpmn:sequenceFlow id="Flow_1k4bytr" name="This is just a loop" sourceRef="Gateway_1dfj9la" targetRef="Gateway_0opunjy" />
-    <bpmn:startEvent id="Event_02hzfqn">
-      <bpmn:outgoing>Flow_1yrgbbo</bpmn:outgoing>
+    <bpmn:endEvent id="Event_0qe55yc">
+      <bpmn:incoming>Flow_1m99zhy</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:scriptTask id="Activity_0edgvl6" name="Set the Prompt">
+      <bpmn:outgoing>Flow_0fnftef</bpmn:outgoing>
+      <bpmn:script>url = "https://api.hyperbolic.xyz/v1/completions"
+
+hyperbolic_api_key = ""
+
+
+headers = {
+    "Content-Type": "application/json",
+    "Authorization": "Bearer " + hyperbolic_api_key
+}
+
+model = "meta-llama/Llama-3.3-70B-Instruct"
+
+data = {
+    "prompt": "Is it safe to exercise outside today?",
+    "model": model,
+    "max_tokens": 25,
+    "temperature": 0.7,
+    "top_p": 0.9
+}</bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:serviceTask id="Activity_0oijucu" name="Ask the AI">
+      <bpmn:extensionElements>
+        <spiffworkflow:serviceTaskOperator id="http/PostRequest" resultVariable="api_response">
+          <spiffworkflow:parameters>
+            <spiffworkflow:parameter id="url" type="str" value="url" />
+            <spiffworkflow:parameter id="headers" type="any" value="headers" />
+            <spiffworkflow:parameter id="data" type="any" value="data" />
+            <spiffworkflow:parameter id="basic_auth_username" type="str" />
+            <spiffworkflow:parameter id="basic_auth_password" type="str" />
+          </spiffworkflow:parameters>
+        </spiffworkflow:serviceTaskOperator>
+        <spiffworkflow:postScript>message = api_response["body"]["choices"][0]["text"]</spiffworkflow:postScript>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0fnftef</bpmn:incoming>
+      <bpmn:outgoing>Flow_0a67lrs</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:manualTask id="Activity_1f8dcm0" name="Present Results">
+      <bpmn:extensionElements>
+        <spiffworkflow:instructionsForEndUser># The prompt is
+{{data["prompt"]}}
+
+# The response is
+{{message}}</spiffworkflow:instructionsForEndUser>
+        <spiffworkflow:preScript />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0a67lrs</bpmn:incoming>
+      <bpmn:outgoing>Flow_1m99zhy</bpmn:outgoing>
+    </bpmn:manualTask>
+    <bpmn:sequenceFlow id="Flow_1m99zhy" sourceRef="Activity_1f8dcm0" targetRef="Event_0qe55yc" />
+    <bpmn:sequenceFlow id="Flow_0fnftef" sourceRef="Activity_0edgvl6" targetRef="Activity_0oijucu" />
+    <bpmn:sequenceFlow id="Flow_0a67lrs" sourceRef="Activity_0oijucu" targetRef="Activity_1f8dcm0" />
+    <bpmn:startEvent id="Event_1weauuq">
+      <bpmn:outgoing>Flow_0qr5ghq</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:sequenceFlow id="Flow_1yrgbbo" sourceRef="Event_02hzfqn" targetRef="Activity_13ifnen" />
-    <bpmn:textAnnotation id="TextAnnotation_1ul53af">
-      <bpmn:text>IMPORTANT:  You need to get an API key from Hyperbolic.ai and add it to this script!  Select this rectangle, and use the properties panel to the right, find the "Script" section, and click "Launch Editor"  to enter your API Key.</bpmn:text>
-    </bpmn:textAnnotation>
-    <bpmn:association id="Association_0b3x369" associationDirection="None" sourceRef="Activity_13ifnen" targetRef="TextAnnotation_1ul53af" />
-    <bpmn:textAnnotation id="TextAnnotation_0uuwisu">
-      <bpmn:text>same here.</bpmn:text>
-    </bpmn:textAnnotation>
-    <bpmn:association id="Association_1f5fpg8" associationDirection="None" sourceRef="Activity_0sc9um2" targetRef="TextAnnotation_0uuwisu" />
-    <bpmn:textAnnotation id="TextAnnotation_01fwrju">
-      <bpmn:text>and here.</bpmn:text>
-    </bpmn:textAnnotation>
-    <bpmn:association id="Association_19xaetq" associationDirection="None" sourceRef="Activity_0n6jsrk" targetRef="TextAnnotation_01fwrju" />
+    <bpmn:sequenceFlow id="Flow_0qr5ghq" sourceRef="Event_1weauuq" targetRef="Activity_0n6jsrk" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_CompareTemperaturesAgent">
-      <bpmndi:BPMNShape id="Event_0cw1sn4_di" bpmnElement="Event_0cw1sn4">
-        <dc:Bounds x="652" y="-968" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_1ca0nhe_di" bpmnElement="Activity_13ifnen">
-        <dc:Bounds x="150" y="-990" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_17no9if_di" bpmnElement="Activity_0mflkvo">
-        <dc:Bounds x="330" y="-990" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_0ayq1js_di" bpmnElement="Activity_1gay05n">
-        <dc:Bounds x="490" y="-990" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="BPMNShape_0zimkb3" bpmnElement="Activity_16evkuv">
         <dc:Bounds x="330" y="-740" width="100" height="80" />
         <bpmndi:BPMNLabel />
@@ -252,33 +229,23 @@ data["messages"].append({"role":"user", "content": new_prompt})
       <bpmndi:BPMNShape id="Gateway_0opunjy_di" bpmnElement="Gateway_0opunjy" isMarkerVisible="true">
         <dc:Bounds x="235" y="-425" width="50" height="50" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Event_02hzfqn_di" bpmnElement="Event_02hzfqn">
-        <dc:Bounds x="42" y="-968" width="36" height="36" />
+      <bpmndi:BPMNShape id="BPMNShape_1h5eyvh" bpmnElement="Event_0qe55yc">
+        <dc:Bounds x="662" y="-938" width="36" height="36" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_1ul53af_di" bpmnElement="TextAnnotation_1ul53af">
-        <dc:Bounds x="220" y="-1140" width="360" height="100" />
+      <bpmndi:BPMNShape id="BPMNShape_1jpl4d0" bpmnElement="Activity_0edgvl6">
+        <dc:Bounds x="160" y="-960" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_0uuwisu_di" bpmnElement="TextAnnotation_0uuwisu">
-        <dc:Bounds x="250" y="-820" width="99.99998764470521" height="30.004503916793187" />
+      <bpmndi:BPMNShape id="BPMNShape_1rffpl8" bpmnElement="Activity_0oijucu">
+        <dc:Bounds x="340" y="-960" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="TextAnnotation_01fwrju_di" bpmnElement="TextAnnotation_01fwrju">
-        <dc:Bounds x="200" y="-560" width="100" height="30" />
-        <bpmndi:BPMNLabel />
+      <bpmndi:BPMNShape id="BPMNShape_068qs5c" bpmnElement="Activity_1f8dcm0">
+        <dc:Bounds x="500" y="-960" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_0l70b6x_di" bpmnElement="Flow_0l70b6x">
-        <di:waypoint x="250" y="-950" />
-        <di:waypoint x="330" y="-950" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_0sz5gi2_di" bpmnElement="Flow_0sz5gi2">
-        <di:waypoint x="430" y="-950" />
-        <di:waypoint x="490" y="-950" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_03numl1_di" bpmnElement="Flow_03numl1">
-        <di:waypoint x="590" y="-950" />
-        <di:waypoint x="652" y="-950" />
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_1weauuq_di" bpmnElement="Event_1weauuq">
+        <dc:Bounds x="-8" y="-418" width="36" height="36" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="BPMNEdge_0tyeo4x" bpmnElement="Flow_16r6gep">
         <di:waypoint x="430" y="-700" />
         <di:waypoint x="490" y="-700" />
@@ -323,21 +290,21 @@ data["messages"].append({"role":"user", "content": new_prompt})
           <dc:Bounds x="423" y="-528" width="85" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_0b3x369_di" bpmnElement="Association_0b3x369">
-        <di:waypoint x="216" y="-990" />
-        <di:waypoint x="236" y="-1040" />
+      <bpmndi:BPMNEdge id="BPMNEdge_1yp43ef" bpmnElement="Flow_1m99zhy">
+        <di:waypoint x="600" y="-920" />
+        <di:waypoint x="662" y="-920" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_1f5fpg8_di" bpmnElement="Association_1f5fpg8">
-        <di:waypoint x="238" y="-740" />
-        <di:waypoint x="286" y="-790" />
+      <bpmndi:BPMNEdge id="BPMNEdge_0b6m9j2" bpmnElement="Flow_0fnftef">
+        <di:waypoint x="260" y="-920" />
+        <di:waypoint x="340" y="-920" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Association_19xaetq_di" bpmnElement="Association_19xaetq">
-        <di:waypoint x="178" y="-440" />
-        <di:waypoint x="240" y="-530" />
+      <bpmndi:BPMNEdge id="BPMNEdge_1gw7tn2" bpmnElement="Flow_0a67lrs">
+        <di:waypoint x="440" y="-920" />
+        <di:waypoint x="500" y="-920" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1yrgbbo_di" bpmnElement="Flow_1yrgbbo">
-        <di:waypoint x="78" y="-950" />
-        <di:waypoint x="150" y="-950" />
+      <bpmndi:BPMNEdge id="Flow_0qr5ghq_di" bpmnElement="Flow_0qr5ghq">
+        <di:waypoint x="28" y="-400" />
+        <di:waypoint x="100" y="-400" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

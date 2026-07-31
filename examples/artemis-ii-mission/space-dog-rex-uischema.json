@@ -1,0 +1,33 @@
+{
+  "ui:order": [
+    "rex_breed",
+    "rex_age",
+    "rex_weight_kg",
+    "rex_veterinarian",
+    "rex_medical_clearance",
+    "rex_suit_size",
+    "rex_special_notes"
+  ],
+  "rex_breed": {
+    "ui:help": "Rex's registered breed"
+  },
+  "rex_age": {
+    "ui:help": "Age in whole years at time of launch"
+  },
+  "rex_weight_kg": {
+    "ui:help": "Pre-flight weigh-in result in kilograms"
+  },
+  "rex_veterinarian": {
+    "ui:help": "Name of the attending flight veterinarian"
+  },
+  "rex_medical_clearance": {
+    "ui:help": "Veterinarian has signed off on Rex's fitness for spaceflight"
+  },
+  "rex_suit_size": {
+    "ui:help": "Canine EVA suit size — measure thorax circumference before selecting"
+  },
+  "rex_special_notes": {
+    "ui:widget": "textarea",
+    "ui:help": "Any dietary requirements, behavioral notes, or mission-specific instructions"
+  }
+}

@@ -6,9 +6,7 @@
     "suit_integrity",
     "comm_systems",
     "life_support",
-    "crew_health",
-    "ralf_onboard",
-    "ralf_food"
+    "crew_health"
   ],
   "properties": {
     "suit_integrity": {
@@ -35,16 +33,6 @@
         "Medical Hold"
       ],
       "default": "All Crew Flight Ready"
-    },
-    "ralf_onboard": {
-      "type": "boolean",
-      "title": "Ralf the Dog is On Board",
-      "default": false
-    },
-    "ralf_food": {
-      "type": "boolean",
-      "title": "Ralf the Dog Has Food",
-      "default": false
     }
   }
 }

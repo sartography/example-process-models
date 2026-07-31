@@ -1,0 +1,28 @@
+{
+  "ui:order": [
+    "mission",
+    "heat_shield_verified",
+    "trajectory_confirmed",
+    "comm_blackout_briefed",
+    "stowage_secured",
+    "recovery_team_notified"
+  ],
+  "mission": {
+    "ui:help": "Mission identifier — populated automatically from workflow context"
+  },
+  "heat_shield_verified": {
+    "ui:help": "Confirm Orion heat shield is intact and rated for the re-entry corridor"
+  },
+  "trajectory_confirmed": {
+    "ui:help": "Flight dynamics has confirmed the re-entry trajectory and splashdown zone"
+  },
+  "comm_blackout_briefed": {
+    "ui:help": "Crew has been briefed on the expected communications blackout window (~3 min)"
+  },
+  "stowage_secured": {
+    "ui:help": "All loose equipment, food, and samples are stowed and restraints are locked"
+  },
+  "recovery_team_notified": {
+    "ui:help": "USS San Diego and recovery helicopters have been given updated splashdown coordinates"
+  }
+}

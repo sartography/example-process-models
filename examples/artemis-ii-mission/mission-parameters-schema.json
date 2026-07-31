@@ -7,7 +7,10 @@
     "commander",
     "pilot",
     "mission_specialist_1",
-    "mission_specialist_2"
+    "mission_specialist_2",
+    "medical_expert",
+    "mission_duration_days",
+    "splashdown_target"
   ],
   "properties": {
     "mission_name": {
@@ -35,12 +38,22 @@
       "title": "Mission Specialist 2",
       "default": "Jeremy Hansen"
     },
+    "medical_expert": {
+      "type": "string",
+      "title": "Medical Expert",
+      "default": "Joseph Dervay"
+    },
     "mission_duration_days": {
       "type": "integer",
       "title": "Mission Duration (days)",
       "default": 10,
       "minimum": 1,
       "maximum": 30
+    },
+    "splashdown_target": {
+      "type": "string",
+      "title": "Splashdown Target",
+      "default": "Pacific Ocean, off the coast of San Diego"
     }
   }
 }

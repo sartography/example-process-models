@@ -3,12 +3,17 @@
   "description": "Complete all checks before atmospheric re-entry.",
   "type": "object",
   "required": [
+    "mission",
     "heat_shield_verified",
     "trajectory_confirmed",
     "comm_blackout_briefed",
     "recovery_team_notified"
   ],
   "properties": {
+    "mission": {
+      "type": "string",
+      "title": "Mission"
+    },
     "heat_shield_verified": {
       "type": "boolean",
       "title": "Heat Shield Integrity Verified",

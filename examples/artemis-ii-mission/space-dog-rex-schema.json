@@ -1,0 +1,48 @@
+{
+  "title": "Space Dog Rex - Mission Parameters",
+  "description": "Configure the mission parameters for Rex, the canine crew member aboard Artemis II.",
+  "type": "object",
+  "required": ["rex_breed", "rex_age", "rex_weight_kg", "rex_veterinarian", "rex_medical_clearance"],
+  "properties": {
+    "rex_breed": {
+      "type": "string",
+      "title": "Breed",
+      "default": "Siberian Husky"
+    },
+    "rex_age": {
+      "type": "integer",
+      "title": "Age (years)",
+      "minimum": 1,
+      "maximum": 20,
+      "default": 4
+    },
+    "rex_weight_kg": {
+      "type": "number",
+      "title": "Weight (kg)",
+      "minimum": 1,
+      "maximum": 100,
+      "default": 27
+    },
+    "rex_veterinarian": {
+      "type": "string",
+      "title": "Assigned Veterinarian",
+      "default": "Dr. Elena Vasquez"
+    },
+    "rex_medical_clearance": {
+      "type": "boolean",
+      "title": "Medical Clearance Approved",
+      "default": false
+    },
+    "rex_suit_size": {
+      "type": "string",
+      "title": "Suit Size",
+      "enum": ["XS", "S", "M", "L", "XL"],
+      "default": "M"
+    },
+    "rex_special_notes": {
+      "type": "string",
+      "title": "Special Notes",
+      "default": ""
+    }
+  }
+}

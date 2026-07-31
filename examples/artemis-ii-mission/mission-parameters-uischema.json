@@ -1,0 +1,37 @@
+{
+  "ui:order": [
+    "mission_name",
+    "commander",
+    "pilot",
+    "mission_specialist_1",
+    "mission_specialist_2",
+    "medical_expert",
+    "mission_duration_days",
+    "splashdown_target"
+  ],
+  "mission_name": {
+    "ui:autofocus": true,
+    "ui:help": "Official NASA mission designation (e.g. Artemis II)"
+  },
+  "commander": {
+    "ui:help": "Mission Commander — responsible for overall spacecraft operations"
+  },
+  "pilot": {
+    "ui:help": "Pilot — responsible for Orion systems and navigation"
+  },
+  "mission_specialist_1": {
+    "ui:help": "Mission Specialist 1"
+  },
+  "mission_specialist_2": {
+    "ui:help": "Mission Specialist 2"
+  },
+  "medical_expert": {
+    "ui:help": "Flight surgeon overseeing crew health"
+  },
+  "mission_duration_days": {
+    "ui:help": "Planned duration in days from launch to splashdown"
+  },
+  "splashdown_target": {
+    "ui:help": "Primary recovery zone for the Orion capsule"
+  }
+}

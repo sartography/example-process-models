@@ -1,0 +1,20 @@
+{
+  "ui:order": [
+    "suit_integrity",
+    "comm_systems",
+    "life_support",
+    "crew_health"
+  ],
+  "suit_integrity": {
+    "ui:help": "Confirm all four crew pressure suits have passed leak and integrity checks"
+  },
+  "comm_systems": {
+    "ui:help": "Verify crew headsets, suit telemetry links, and LCC voice loops are operational"
+  },
+  "life_support": {
+    "ui:help": "Confirm O₂, CO₂ scrubbers, and cabin pressure systems are nominal"
+  },
+  "crew_health": {
+    "ui:help": "Overall crew medical status as assessed by the flight surgeon"
+  }
+}

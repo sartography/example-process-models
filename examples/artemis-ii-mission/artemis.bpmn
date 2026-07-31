@@ -8,100 +8,30 @@
     <bpmn:laneSet id="LaneSet_1">
       <bpmn:lane id="Lane_FlightDirector" name="Flight Director">
         <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>launch_decision_gw</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>scrub_end</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>scrub_report</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>go_no_go_decision</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>configure_mission</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>launch_decision_gw</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>scrub_report</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>scrub_end</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_MissionControl" name="Mission Control">
-        <bpmn:flowNodeRef>evaluate_conditions</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>fetch_weather</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>parallel_split</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>monitor_telemetry</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>parallel_split</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>parallel_join</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>fetch_weather</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>evaluate_conditions</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>mission_report</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>end_event</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>launch_subprocess</bpmn:flowNodeRef>
       </bpmn:lane>
-      <bpmn:lane id="Lane_FlightCrew" name="Crew">
+      <bpmn:lane id="Lane_FlightCrew" name="AI">
         <bpmn:flowNodeRef>crew_readiness</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>lunar_observations</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
-    <bpmn:sequenceFlow id="Flow_01" sourceRef="StartEvent_1" targetRef="configure_mission" />
-    <bpmn:sequenceFlow id="Flow_rex" sourceRef="configure_mission" targetRef="fetch_weather" />
-    <bpmn:sequenceFlow id="Flow_04" sourceRef="evaluate_conditions" targetRef="go_no_go_decision" />
-    <bpmn:sequenceFlow id="Flow_05" sourceRef="go_no_go_decision" targetRef="launch_decision_gw" />
-    <bpmn:sequenceFlow id="Flow_go" name="Go" sourceRef="launch_decision_gw" targetRef="crew_readiness">
-      <bpmn:conditionExpression>launch_decision == "go"</bpmn:conditionExpression>
-    </bpmn:sequenceFlow>
-    <bpmn:sequenceFlow id="Flow_no_go" name="No-Go" sourceRef="launch_decision_gw" targetRef="scrub_report" />
-    <bpmn:sequenceFlow id="Flow_08" sourceRef="scrub_report" targetRef="scrub_end" />
-    <bpmn:sequenceFlow id="Flow_03" sourceRef="fetch_weather" targetRef="evaluate_conditions" />
-    <bpmn:sequenceFlow id="Flow_1tevaj6" sourceRef="launch_subprocess" targetRef="parallel_split" />
-    <bpmn:sequenceFlow id="Flow_12" sourceRef="parallel_split" targetRef="lunar_observations" />
-    <bpmn:sequenceFlow id="Flow_13" sourceRef="parallel_split" targetRef="monitor_telemetry" />
-    <bpmn:sequenceFlow id="Flow_15" sourceRef="monitor_telemetry" targetRef="parallel_join" />
-    <bpmn:sequenceFlow id="Flow_14" sourceRef="lunar_observations" targetRef="parallel_join" />
-    <bpmn:sequenceFlow id="Flow_16" sourceRef="parallel_join" targetRef="mission_report" />
-    <bpmn:sequenceFlow id="Flow_20" sourceRef="mission_report" targetRef="end_event" />
-    <bpmn:sequenceFlow id="Flow_09" sourceRef="crew_readiness" targetRef="launch_subprocess" />
     <bpmn:startEvent id="StartEvent_1">
       <bpmn:outgoing>Flow_01</bpmn:outgoing>
     </bpmn:startEvent>
-    <bpmn:businessRuleTask id="go_no_go_decision" name="Go / No-Go Decision">
-      <bpmn:extensionElements>
-        <spiffworkflow:calledDecisionId>go_no_go_decision_table</spiffworkflow:calledDecisionId>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_04</bpmn:incoming>
-      <bpmn:outgoing>Flow_05</bpmn:outgoing>
-    </bpmn:businessRuleTask>
-    <bpmn:scriptTask id="evaluate_conditions" name="Evaluate Launch Conditions" scriptFormat="python">
-      <bpmn:incoming>Flow_03</bpmn:incoming>
-      <bpmn:outgoing>Flow_04</bpmn:outgoing>
-      <bpmn:script>
-# Set mission identifier for message correlation
-mission_id = "ARTEMIS-II"
-
-# Evaluate weather conditions for launch
-# In a real scenario these would come from the weather service task
-weather_status = "green"
-systems_status = "nominal"
-launch_site = "Kennedy Space Center, LC-39B"
-vehicle = "SLS Block 1 / Orion MPCV"
-      </bpmn:script>
-    </bpmn:scriptTask>
-    <bpmn:userTask id="configure_mission" name="Configure Mission Parameters">
-      <bpmn:extensionElements>
-        <spiffworkflow:properties>
-          <spiffworkflow:property name="formJsonSchemaFilename" value="mission-parameters-schema.json" />
-          <spiffworkflow:property name="formUiSchemaFilename" value="mission-parameters-uischema.json" />
-        </spiffworkflow:properties>
-        <spiffworkflow:instructionsForEndUser># Artemis II Mission Configuration
-
-Configure the parameters for NASA's Artemis II crewed lunar flyby mission — the first crewed voyage beyond low Earth orbit since Apollo 17 in 1972.
-
-The crew of four will orbit the Moon and return to Earth over approximately 10 days aboard the Orion spacecraft, launched on the Space Launch System (SLS) from Kennedy Space Center.  </spiffworkflow:instructionsForEndUser>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_01</bpmn:incoming>
-      <bpmn:outgoing>Flow_rex</bpmn:outgoing>
-    </bpmn:userTask>
-    <bpmn:serviceTask id="fetch_weather" name="Fetch Launch Weather">
-      <bpmn:extensionElements>
-        <spiffworkflow:serviceTaskOperator id="http/GetRequest">
-          <spiffworkflow:parameters>
-            <spiffworkflow:parameter id="url" type="str" value="&#39;https://api.weather.gov/stations/KTTS/observations/latest&#39;" />
-            <spiffworkflow:parameter id="headers" type="any" value="{&#39;User-Agent&#39;: &#39;SpiffWorkflow-ArtemisDemo&#39;}" />
-            <spiffworkflow:parameter id="params" type="any" />
-            <spiffworkflow:parameter id="basic_auth_username" type="str" />
-            <spiffworkflow:parameter id="basic_auth_password" type="str" />
-          </spiffworkflow:parameters>
-        </spiffworkflow:serviceTaskOperator>
-      </bpmn:extensionElements>
-      <bpmn:incoming>Flow_rex</bpmn:incoming>
-      <bpmn:outgoing>Flow_03</bpmn:outgoing>
-    </bpmn:serviceTask>
     <bpmn:exclusiveGateway id="launch_decision_gw" name="Launch Decision" default="Flow_no_go">
       <bpmn:incoming>Flow_05</bpmn:incoming>
       <bpmn:outgoing>Flow_go</bpmn:outgoing>
@@ -111,6 +41,7 @@ The crew of four will orbit the Moon and return to Earth over approximately 10 d
       <bpmn:extensionElements>
         <spiffworkflow:properties>
           <spiffworkflow:property name="formJsonSchemaFilename" value="crew-readiness-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="crew-readiness-uischema.json" />
         </spiffworkflow:properties>
         <spiffworkflow:instructionsForEndUser># Crew Readiness Verification
 
@@ -132,61 +63,11 @@ All four crew members must complete suit-up and systems verification before boar
       <bpmn:incoming>Flow_go</bpmn:incoming>
       <bpmn:outgoing>Flow_09</bpmn:outgoing>
     </bpmn:userTask>
-    <bpmn:scriptTask id="scrub_report" name="Generate Scrub Report" scriptFormat="python">
-      <bpmn:incoming>Flow_no_go</bpmn:incoming>
-      <bpmn:outgoing>Flow_08</bpmn:outgoing>
-      <bpmn:script>
-scrub_reason = decision_rationale
-next_launch_window = "48 hours from original launch time"
-scrub_summary = "Mission " + mission_name + " launch scrubbed. Reason: " + decision_rationale + ". Next window: " + next_launch_window
-      </bpmn:script>
-    </bpmn:scriptTask>
-    <bpmn:endEvent id="scrub_end" name="Mission Scrubbed">
-      <bpmn:incoming>Flow_08</bpmn:incoming>
-    </bpmn:endEvent>
-    <bpmn:parallelGateway id="parallel_split">
-      <bpmn:incoming>Flow_1tevaj6</bpmn:incoming>
-      <bpmn:outgoing>Flow_12</bpmn:outgoing>
-      <bpmn:outgoing>Flow_13</bpmn:outgoing>
-    </bpmn:parallelGateway>
-    <bpmn:scriptTask id="monitor_telemetry" name="Monitor Spacecraft Telemetry" scriptFormat="python">
-      <bpmn:incoming>Flow_13</bpmn:incoming>
-      <bpmn:outgoing>Flow_15</bpmn:outgoing>
-      <bpmn:script>
-# Telemetry readings during lunar flyby
-spacecraft_health = "nominal"
-power_levels_percent = 94
-oxygen_levels_percent = 99
-radiation_levels = "within acceptable limits"
-communication_signal = "strong"
-distance_from_earth_km = 380000
-lunar_closest_approach_km = 8900
-      </bpmn:script>
-    </bpmn:scriptTask>
-    <bpmn:parallelGateway id="parallel_join">
-      <bpmn:incoming>Flow_14</bpmn:incoming>
-      <bpmn:incoming>Flow_15</bpmn:incoming>
-      <bpmn:outgoing>Flow_16</bpmn:outgoing>
-    </bpmn:parallelGateway>
-    <bpmn:scriptTask id="mission_report" name="Generate Mission Report" scriptFormat="python">
-      <bpmn:incoming>Flow_16</bpmn:incoming>
-      <bpmn:outgoing>Flow_20</bpmn:outgoing>
-      <bpmn:script>
-mission_status = "complete"
-total_duration_days = mission_duration_days
-max_distance_from_earth_km = 400171
-objectives_met = True
-crew_members = commander + ", " + pilot + ", " + mission_specialist_1 + ", " + mission_specialist_2
-mission_summary = "Artemis II successfully completed a " + str(total_duration_days) + "-day lunar flyby mission. Crew: " + crew_members + ". Maximum distance from Earth: " + str(max_distance_from_earth_km) + " km. Closest lunar approach: " + str(lunar_closest_approach_km) + " km. Splashdown: " + splashdown_target + "."
-      </bpmn:script>
-    </bpmn:scriptTask>
-    <bpmn:endEvent id="end_event" name="Mission Complete">
-      <bpmn:incoming>Flow_20</bpmn:incoming>
-    </bpmn:endEvent>
     <bpmn:receiveTask id="lunar_observations" name="Lunar Observations" messageRef="observations" spiffworkflow:isMatchingCorrelation="true">
       <bpmn:extensionElements>
         <spiffworkflow:properties>
           <spiffworkflow:property name="formJsonSchemaFilename" value="lunar-observations-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="lunar-observations-uischema.json" />
         </spiffworkflow:properties>
         <spiffworkflow:instructionsForEndUser># Lunar Flyby Observations
 
@@ -204,6 +85,104 @@ The Orion spacecraft is now performing its closest approach to the Moon. Record 
       <bpmn:incoming>Flow_12</bpmn:incoming>
       <bpmn:outgoing>Flow_14</bpmn:outgoing>
     </bpmn:receiveTask>
+    <bpmn:scriptTask id="monitor_telemetry" name="Monitor Spacecraft Telemetry" scriptFormat="python">
+      <bpmn:incoming>Flow_13</bpmn:incoming>
+      <bpmn:outgoing>Flow_15</bpmn:outgoing>
+      <bpmn:script>
+# Telemetry readings during lunar flyby
+spacecraft_health = "nominal"
+power_levels_percent = 94
+oxygen_levels_percent = 99
+radiation_levels = "within acceptable limits"
+communication_signal = "strong"
+distance_from_earth_km = 380000
+lunar_closest_approach_km = 8900
+      </bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:parallelGateway id="parallel_split">
+      <bpmn:incoming>Flow_1tevaj6</bpmn:incoming>
+      <bpmn:outgoing>Flow_12</bpmn:outgoing>
+      <bpmn:outgoing>Flow_13</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:parallelGateway id="parallel_join">
+      <bpmn:incoming>Flow_14</bpmn:incoming>
+      <bpmn:incoming>Flow_15</bpmn:incoming>
+      <bpmn:outgoing>Flow_16</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:serviceTask id="fetch_weather" name="Fetch Launch Weather">
+      <bpmn:extensionElements>
+        <spiffworkflow:serviceTaskOperator id="http/GetRequest">
+          <spiffworkflow:parameters>
+            <spiffworkflow:parameter id="url" type="str" value="&#39;https://api.weather.gov/stations/KTTS/observations/latest&#39;" />
+            <spiffworkflow:parameter id="headers" type="any" value="{&#39;User-Agent&#39;: &#39;SpiffWorkflow-ArtemisDemo&#39;}" />
+            <spiffworkflow:parameter id="params" type="any" />
+            <spiffworkflow:parameter id="basic_auth_username" type="str" />
+            <spiffworkflow:parameter id="basic_auth_password" type="str" />
+          </spiffworkflow:parameters>
+        </spiffworkflow:serviceTaskOperator>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_rex</bpmn:incoming>
+      <bpmn:outgoing>Flow_03</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:scriptTask id="evaluate_conditions" name="Evaluate Launch Conditions" scriptFormat="python">
+      <bpmn:incoming>Flow_03</bpmn:incoming>
+      <bpmn:outgoing>Flow_04</bpmn:outgoing>
+      <bpmn:script>
+# Set mission identifier for message correlation
+mission_id = "ARTEMIS-II"
+
+# Evaluate weather conditions for launch
+# In a real scenario these would come from the weather service task
+weather_status = "green"
+systems_status = "nominal"
+launch_site = "Kennedy Space Center, LC-39B"
+vehicle = "SLS Block 1 / Orion MPCV"
+      </bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:endEvent id="scrub_end" name="Mission Scrubbed">
+      <bpmn:incoming>Flow_08</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:scriptTask id="scrub_report" name="Generate Scrub Report" scriptFormat="python">
+      <bpmn:incoming>Flow_no_go</bpmn:incoming>
+      <bpmn:outgoing>Flow_08</bpmn:outgoing>
+      <bpmn:script>
+scrub_reason = decision_rationale
+next_launch_window = "48 hours from original launch time"
+scrub_summary = "Mission " + mission_name + " launch scrubbed. Reason: " + decision_rationale + ". Next window: " + next_launch_window
+      </bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:sequenceFlow id="Flow_01" sourceRef="StartEvent_1" targetRef="configure_mission" />
+    <bpmn:sequenceFlow id="Flow_rex" sourceRef="configure_mission" targetRef="fetch_weather" />
+    <bpmn:sequenceFlow id="Flow_04" sourceRef="evaluate_conditions" targetRef="go_no_go_decision" />
+    <bpmn:sequenceFlow id="Flow_go" name="Go" sourceRef="launch_decision_gw" targetRef="crew_readiness">
+      <bpmn:conditionExpression>launch_decision == "go"</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_no_go" name="No-Go" sourceRef="launch_decision_gw" targetRef="scrub_report" />
+    <bpmn:sequenceFlow id="Flow_09" sourceRef="crew_readiness" targetRef="launch_subprocess" />
+    <bpmn:sequenceFlow id="Flow_20" sourceRef="mission_report" targetRef="end_event" />
+    <bpmn:sequenceFlow id="Flow_12" sourceRef="parallel_split" targetRef="lunar_observations" />
+    <bpmn:sequenceFlow id="Flow_14" sourceRef="lunar_observations" targetRef="parallel_join" />
+    <bpmn:sequenceFlow id="Flow_13" sourceRef="parallel_split" targetRef="monitor_telemetry" />
+    <bpmn:sequenceFlow id="Flow_15" sourceRef="monitor_telemetry" targetRef="parallel_join" />
+    <bpmn:sequenceFlow id="Flow_16" sourceRef="parallel_join" targetRef="mission_report" />
+    <bpmn:sequenceFlow id="Flow_03" sourceRef="fetch_weather" targetRef="evaluate_conditions" />
+    <bpmn:sequenceFlow id="Flow_08" sourceRef="scrub_report" targetRef="scrub_end" />
+    <bpmn:scriptTask id="mission_report" name="Generate Mission Report" scriptFormat="python">
+      <bpmn:incoming>Flow_16</bpmn:incoming>
+      <bpmn:outgoing>Flow_20</bpmn:outgoing>
+      <bpmn:script>
+mission_status = "complete"
+total_duration_days = mission_duration_days
+max_distance_from_earth_km = 400171
+objectives_met = True
+crew_members = commander + ", " + pilot + ", " + mission_specialist_1 + ", " + mission_specialist_2
+mission_summary = "Artemis II successfully completed a " + str(total_duration_days) + "-day lunar flyby mission. Crew: " + crew_members + ". Maximum distance from Earth: " + str(max_distance_from_earth_km) + " km. Closest lunar approach: " + str(lunar_closest_approach_km) + " km. Splashdown: " + splashdown_target + "."
+      </bpmn:script>
+    </bpmn:scriptTask>
+    <bpmn:endEvent id="end_event" name="Mission Complete">
+      <bpmn:incoming>Flow_20</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1tevaj6" sourceRef="launch_subprocess" targetRef="parallel_split" />
     <bpmn:subProcess id="launch_subprocess" name="Launch &#38; Earth Departure">
       <bpmn:incoming>Flow_09</bpmn:incoming>
       <bpmn:outgoing>Flow_1tevaj6</bpmn:outgoing>
@@ -247,6 +226,29 @@ estimated_lunar_arrival = "Mission Day 4"
       <bpmn:sequenceFlow id="Sub_Flow_02" sourceRef="launch_countdown" targetRef="tli_burn" />
       <bpmn:sequenceFlow id="Sub_Flow_03" sourceRef="tli_burn" targetRef="sub_end" />
     </bpmn:subProcess>
+    <bpmn:businessRuleTask id="go_no_go_decision" name="Go / No-Go Decision">
+      <bpmn:extensionElements>
+        <spiffworkflow:calledDecisionId>go_no_go_decision_table</spiffworkflow:calledDecisionId>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_04</bpmn:incoming>
+      <bpmn:outgoing>Flow_05</bpmn:outgoing>
+    </bpmn:businessRuleTask>
+    <bpmn:sequenceFlow id="Flow_05" sourceRef="go_no_go_decision" targetRef="launch_decision_gw" />
+    <bpmn:userTask id="configure_mission" name="Configure Mission Parameters">
+      <bpmn:extensionElements>
+        <spiffworkflow:properties>
+          <spiffworkflow:property name="formJsonSchemaFilename" value="mission-parameters-schema.json" />
+          <spiffworkflow:property name="formUiSchemaFilename" value="mission-parameters-uischema.json" />
+        </spiffworkflow:properties>
+        <spiffworkflow:instructionsForEndUser># Artemis II Mission Configuration
+
+Configure the parameters for NASA's Artemis II crewed lunar flyby mission — the first crewed voyage beyond low Earth orbit since Apollo 17 in 1972.
+
+The crew of four will orbit the Moon and return to Earth over approximately 10 days aboard the Orion spacecraft, launched on the Space Launch System (SLS) from Kennedy Space Center.  </spiffworkflow:instructionsForEndUser>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_01</bpmn:incoming>
+      <bpmn:outgoing>Flow_rex</bpmn:outgoing>
+    </bpmn:userTask>
   </bpmn:process>
   <bpmn:message id="observations" name="observations" />
   <bpmn:correlationProperty id="mission" name="mission">
@@ -257,160 +259,165 @@ estimated_lunar_arrival = "Mission Day 4"
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_artemis">
       <bpmndi:BPMNShape id="Participant_artemis_di" bpmnElement="Participant_artemis" isHorizontal="true">
-        <dc:Bounds x="615" y="-60" width="1355" height="490" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_FlightDirector_di" bpmnElement="Lane_FlightDirector" isHorizontal="true">
-        <dc:Bounds x="645" y="-60" width="1325" height="172" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Lane_MissionControl_di" bpmnElement="Lane_MissionControl" isHorizontal="true">
-        <dc:Bounds x="645" y="112" width="1325" height="158" />
+        <dc:Bounds x="615" y="5" width="2215" height="660" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Lane_FlightCrew_di" bpmnElement="Lane_FlightCrew" isHorizontal="true">
-        <dc:Bounds x="645" y="270" width="1325" height="160" />
+        <dc:Bounds x="645" y="435" width="2185" height="230" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_MissionControl_di" bpmnElement="Lane_MissionControl" isHorizontal="true">
+        <dc:Bounds x="645" y="195" width="2185" height="240" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_FlightDirector_di" bpmnElement="Lane_FlightDirector" isHorizontal="true">
+        <dc:Bounds x="645" y="5" width="2185" height="190" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="StartEvent_1_di" bpmnElement="StartEvent_1">
-        <dc:Bounds x="702" y="-1" width="36" height="36" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="go_no_go_decision_di" bpmnElement="go_no_go_decision">
-        <dc:Bounds x="970" y="-23" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="evaluate_conditions_di" bpmnElement="evaluate_conditions">
-        <dc:Bounds x="970" y="152" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="configure_mission_di" bpmnElement="configure_mission">
-        <dc:Bounds x="800" y="-23" width="100" height="80" />
-        <bpmndi:BPMNLabel />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="fetch_weather_di" bpmnElement="fetch_weather">
-        <dc:Bounds x="800" y="152" width="100" height="80" />
-        <bpmndi:BPMNLabel />
+        <dc:Bounds x="685" y="82" width="36" height="36" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="launch_decision_gw_di" bpmnElement="launch_decision_gw" isMarkerVisible="true">
-        <dc:Bounds x="1145" y="-8" width="50" height="50" />
+        <dc:Bounds x="1655" y="75" width="50" height="50" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1129" y="-32" width="82" height="14" />
+          <dc:Bounds x="1639" y="51" width="82" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="crew_readiness_di" bpmnElement="crew_readiness">
-        <dc:Bounds x="1120" y="310" width="100" height="80" />
+        <dc:Bounds x="1755" y="510" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="scrub_report_di" bpmnElement="scrub_report">
-        <dc:Bounds x="1270" y="-23" width="100" height="80" />
+      <bpmndi:BPMNShape id="lunar_observations_di" bpmnElement="lunar_observations">
+        <dc:Bounds x="2205" y="510" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="monitor_telemetry_di" bpmnElement="monitor_telemetry">
+        <dc:Bounds x="2205" y="275" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="parallel_split_di" bpmnElement="parallel_split">
+        <dc:Bounds x="2100" y="290" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="parallel_join_di" bpmnElement="parallel_join">
+        <dc:Bounds x="2370" y="290" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="fetch_weather_di" bpmnElement="fetch_weather">
+        <dc:Bounds x="1150" y="275" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="evaluate_conditions_di" bpmnElement="evaluate_conditions">
+        <dc:Bounds x="1300" y="275" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="scrub_end_di" bpmnElement="scrub_end">
-        <dc:Bounds x="1432" y="-1" width="36" height="36" />
+        <dc:Bounds x="1977" y="82" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1406" y="42" width="88" height="14" />
+          <dc:Bounds x="1951" y="125" width="88" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="parallel_split_di" bpmnElement="parallel_split">
-        <dc:Bounds x="1420" y="167" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="monitor_telemetry_di" bpmnElement="monitor_telemetry">
-        <dc:Bounds x="1500" y="152" width="100" height="80" />
+      <bpmndi:BPMNShape id="scrub_report_di" bpmnElement="scrub_report">
+        <dc:Bounds x="1800" y="60" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="parallel_join_di" bpmnElement="parallel_join">
-        <dc:Bounds x="1635" y="167" width="50" height="50" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="mission_report_di" bpmnElement="mission_report">
-        <dc:Bounds x="1740" y="152" width="100" height="80" />
+        <dc:Bounds x="2480" y="275" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="end_event_di" bpmnElement="end_event">
-        <dc:Bounds x="1892" y="174" width="36" height="36" />
+        <dc:Bounds x="2642" y="297" width="36" height="36" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1866" y="217" width="88" height="14" />
+          <dc:Bounds x="2616" y="340" width="88" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="lunar_observations_di" bpmnElement="lunar_observations">
-        <dc:Bounds x="1500" y="310" width="100" height="80" />
+      <bpmndi:BPMNShape id="launch_subprocess_di" bpmnElement="launch_subprocess" isExpanded="false">
+        <dc:Bounds x="1885" y="275" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="launch_subprocess_di" bpmnElement="launch_subprocess" isExpanded="false">
-        <dc:Bounds x="1270" y="152" width="100" height="80" />
+      <bpmndi:BPMNShape id="go_no_go_decision_di" bpmnElement="go_no_go_decision">
+        <dc:Bounds x="1505" y="60" width="100" height="80" />
+        <bpmndi:BPMNLabel />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="configure_mission_di" bpmnElement="configure_mission">
+        <dc:Bounds x="810" y="60" width="100" height="80" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_01_di" bpmnElement="Flow_01">
-        <di:waypoint x="738" y="17" />
-        <di:waypoint x="800" y="17" />
+        <di:waypoint x="721" y="100" />
+        <di:waypoint x="810" y="100" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_rex_di" bpmnElement="Flow_rex">
-        <di:waypoint x="850" y="57" />
-        <di:waypoint x="850" y="152" />
+        <di:waypoint x="910" y="100" />
+        <di:waypoint x="1015" y="100" />
+        <di:waypoint x="1015" y="315" />
+        <di:waypoint x="1150" y="315" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_04_di" bpmnElement="Flow_04">
-        <di:waypoint x="1020" y="152" />
-        <di:waypoint x="1020" y="57" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_05_di" bpmnElement="Flow_05">
-        <di:waypoint x="1070" y="17" />
-        <di:waypoint x="1145" y="17" />
+        <di:waypoint x="1400" y="315" />
+        <di:waypoint x="1480" y="315" />
+        <di:waypoint x="1480" y="100" />
+        <di:waypoint x="1505" y="100" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_go_di" bpmnElement="Flow_go">
-        <di:waypoint x="1170" y="42" />
-        <di:waypoint x="1170" y="310" />
+        <di:waypoint x="1680" y="125" />
+        <di:waypoint x="1680" y="550" />
+        <di:waypoint x="1755" y="550" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1178" y="167" width="15" height="14" />
+          <dc:Bounds x="1688" y="325" width="15" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_no_go_di" bpmnElement="Flow_no_go">
-        <di:waypoint x="1195" y="17" />
-        <di:waypoint x="1270" y="17" />
+        <di:waypoint x="1705" y="100" />
+        <di:waypoint x="1800" y="100" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="1212" y="30" width="33" height="14" />
+          <dc:Bounds x="1737" y="82" width="33" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_08_di" bpmnElement="Flow_08">
-        <di:waypoint x="1370" y="17" />
-        <di:waypoint x="1432" y="17" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_03_di" bpmnElement="Flow_03">
-        <di:waypoint x="900" y="192" />
-        <di:waypoint x="970" y="192" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_1tevaj6_di" bpmnElement="Flow_1tevaj6">
-        <di:waypoint x="1370" y="192" />
-        <di:waypoint x="1420" y="192" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_12_di" bpmnElement="Flow_12">
-        <di:waypoint x="1445" y="217" />
-        <di:waypoint x="1445" y="350" />
-        <di:waypoint x="1500" y="350" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_13_di" bpmnElement="Flow_13">
-        <di:waypoint x="1470" y="192" />
-        <di:waypoint x="1500" y="192" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_15_di" bpmnElement="Flow_15">
-        <di:waypoint x="1600" y="192" />
-        <di:waypoint x="1635" y="192" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_14_di" bpmnElement="Flow_14">
-        <di:waypoint x="1600" y="350" />
-        <di:waypoint x="1660" y="350" />
-        <di:waypoint x="1660" y="217" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_16_di" bpmnElement="Flow_16">
-        <di:waypoint x="1685" y="192" />
-        <di:waypoint x="1740" y="192" />
+      <bpmndi:BPMNEdge id="Flow_09_di" bpmnElement="Flow_09">
+        <di:waypoint x="1855" y="550" />
+        <di:waypoint x="1935" y="550" />
+        <di:waypoint x="1935" y="355" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_20_di" bpmnElement="Flow_20">
-        <di:waypoint x="1840" y="192" />
-        <di:waypoint x="1892" y="192" />
+        <di:waypoint x="2580" y="315" />
+        <di:waypoint x="2642" y="315" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_09_di" bpmnElement="Flow_09">
-        <di:waypoint x="1220" y="350" />
-        <di:waypoint x="1320" y="350" />
-        <di:waypoint x="1320" y="232" />
+      <bpmndi:BPMNEdge id="Flow_12_di" bpmnElement="Flow_12">
+        <di:waypoint x="2125" y="340" />
+        <di:waypoint x="2125" y="550" />
+        <di:waypoint x="2205" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14_di" bpmnElement="Flow_14">
+        <di:waypoint x="2305" y="550" />
+        <di:waypoint x="2395" y="550" />
+        <di:waypoint x="2395" y="340" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13_di" bpmnElement="Flow_13">
+        <di:waypoint x="2150" y="315" />
+        <di:waypoint x="2205" y="315" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15_di" bpmnElement="Flow_15">
+        <di:waypoint x="2305" y="315" />
+        <di:waypoint x="2370" y="315" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16_di" bpmnElement="Flow_16">
+        <di:waypoint x="2420" y="315" />
+        <di:waypoint x="2480" y="315" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03_di" bpmnElement="Flow_03">
+        <di:waypoint x="1250" y="315" />
+        <di:waypoint x="1300" y="315" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08_di" bpmnElement="Flow_08">
+        <di:waypoint x="1900" y="100" />
+        <di:waypoint x="1977" y="100" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tevaj6_di" bpmnElement="Flow_1tevaj6">
+        <di:waypoint x="1985" y="315" />
+        <di:waypoint x="2100" y="315" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05_di" bpmnElement="Flow_05">
+        <di:waypoint x="1605" y="100" />
+        <di:waypoint x="1655" y="100" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

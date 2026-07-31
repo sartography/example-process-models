@@ -1,0 +1,25 @@
+{
+  "ui:order": [
+    "mission",
+    "instruments_nominal",
+    "photos_taken",
+    "crew_morale",
+    "observation_notes"
+  ],
+  "mission": {
+    "ui:help": "Mission identifier used for message correlation"
+  },
+  "instruments_nominal": {
+    "ui:help": "Confirm all science instruments are operating within expected parameters"
+  },
+  "photos_taken": {
+    "ui:help": "Total number of still images captured during the flyby"
+  },
+  "crew_morale": {
+    "ui:help": "Commander's assessment of overall crew morale at closest lunar approach"
+  },
+  "observation_notes": {
+    "ui:widget": "textarea",
+    "ui:help": "Free-text observations, anomalies, or highlights from the lunar flyby"
+  }
+}
